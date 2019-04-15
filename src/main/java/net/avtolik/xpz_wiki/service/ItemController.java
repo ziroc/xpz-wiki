@@ -34,30 +34,11 @@ public class ItemController {
 		}
 
 		System.out.println("Item found + "+item);
-		String desc;
-		desc = (String) wd.getDict().get(item.getName()+ PREFIX1);
-		if(desc == null)
-			desc = (String) wd.getDict().get(item.getName()+ PREFIX2);
-
-		if(desc == null) {
-			System.out.println("trying slow search");
-
-			for (Entry<String, Article> entry : wd.getArticles().entrySet()) {
-				if(entry.getValue().getRequires() != null) {
-					for (Object req : entry.getValue().getRequires()) {
-						if(((String)req).equals(item.getName()))
-							desc = (String) wd.getDict().get(entry.getValue().getText());
-					}
-				}
-			}
-		}
-		if(desc == null) {
-			desc = "Not found";
-		}
+		String desc = getDescription(item);
 
 		desc = desc.replaceAll("\\{NEWLINE\\}", "\n");
 
-		List<Item> deps = new ArrayList<Item>();
+		List<Item> deps = new ArrayList<>();
 		if (item.getDependencies() != null) {
 			for (String dep : item.getDependencies()) {
 				Item i = new Item();
@@ -72,6 +53,37 @@ public class ItemController {
 		model.addAttribute("deps", deps);
 		model.addAttribute("newLineChar", '\n');
 		return "item";
+	}
+
+	private String getDescription(Item item) {
+		String desc = "Not found";
+		desc = (String) wd.getDict().get(item.getName()+ PREFIX1);
+
+		if(desc == null)
+			desc = (String) wd.getDict().get(item.getName()+ PREFIX2);
+
+		if(desc == null && item.getLookup() != null) {
+			Item lookup = wd.getItems().get(item.getLookup());
+			if(lookup != null) {
+				System.out.println("lookup found");
+				return getDescription(lookup);
+			}
+		}
+
+		if(desc == null) {
+			System.out.println("trying slow search");
+
+			for (Entry<String, Article> entry : wd.getArticles().entrySet()) {
+				if(entry.getValue().getRequires() != null) {
+					for (Object req : entry.getValue().getRequires()) {
+						if(((String)req).equals(item.getName()))
+							desc = (String) wd.getDict().get(entry.getValue().getText());
+					}
+				}
+			}
+		}
+
+		return desc;
 	}
 
 }

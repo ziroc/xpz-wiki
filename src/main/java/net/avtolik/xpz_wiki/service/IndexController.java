@@ -36,7 +36,6 @@ public class IndexController {
 		Random r = new Random();
 		String [] itemIds = wd.getItems().keySet().toArray(new String[0]);
 
-		System.out.println("itemids size "+itemIds.length);
 		for (int i = 0; i < items.length; i++) {
 			int random = r.nextInt(wd.getItems().size());
 			items[i] = wd.getItems().get(itemIds[random]);
