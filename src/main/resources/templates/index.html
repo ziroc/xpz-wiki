@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="icon" href="../../favicon.ico" />
+
+<title>XPZ WIKI</title>
+
+<!-- Bootstrap core CSS -->
+<link href="../static/css/bootstrap.css" rel="stylesheet"
+	th:href="@{/css/bootstrap.css}" />
+</head>
+<body>
+	<div class="container">
+		<h2 class="page-header">Welcome to the X-Piratez Wiki!</h2>
+		<div class="jumbotron2">
+
+
+
+			<form action="/">
+				<div class="input-group">
+					<div class="input-group-prepend">
+						<span th:if="${result} == null" class="input-group-text">Search
+							in article names: </span> <span th:if="${result} != null"
+							class="input-group-text">Search for something else: </span>
+					</div>
+					<input class="form-control" type="text" name="search">
+				</div>
+
+				<br>
+			</form>
+
+			<div th:if="${result} == null">
+				<p>Five random articles:</p>
+
+				<div th:each="item: ${items}">
+					<a th:href="@{/item(id=${item.name})}" th:text="${item.realName}"></a>
+				</div>
+			</div>
+
+			<div th:if="${result} != null">
+				<span th:text="'Found ' + ${result.size()} + ' articles'"></span>
+				<div th:each="item: ${result}">
+					<a th:href="@{/item(id=${item.name})}" th:text="${item.realName}"></a>
+				</div>
+				<br>
+			</div>
+
+
+		</div>
+	</div>
+</body>
+</html>
