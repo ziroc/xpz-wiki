@@ -47,16 +47,29 @@ public class ItemController {
 				deps.add(i);
 			}
 		}
+		
+		List<Item> unlocks = new ArrayList<>();
+		if (item.getUnlocks() != null) {
+			for (String unlock : item.getUnlocks()) {
+				Item i = new Item();
+				i.setName(unlock);
+				i.setRealName(wd.getItems().get(unlock).getRealName());
+				unlocks.add(i);
+			}
+		}
+
+		
 		item.setDescription(desc.toString());
 
 		model.addAttribute("item", item);
 		model.addAttribute("deps", deps);
+		model.addAttribute("unlocks", unlocks);
 		model.addAttribute("newLineChar", '\n');
 		return "item";
 	}
 
 	private String getDescription(Item item) {
-		String desc = "Not found";
+		String desc ;
 		desc = (String) wd.getDict().get(item.getName()+ PREFIX1);
 
 		if(desc == null)
@@ -70,8 +83,8 @@ public class ItemController {
 			}
 		}
 
-		if(desc == null) {
-			System.out.println("trying slow search");
+		if(desc == null && item.getCost() > 0) {
+			System.out.println("trying slow search - for required");
 
 			for (Entry<String, Article> entry : wd.getArticles().entrySet()) {
 				if(entry.getValue().getRequires() != null) {
@@ -82,7 +95,11 @@ public class ItemController {
 				}
 			}
 		}
-
+		if(desc == null && item.getCost() == 0) 
+			desc = "The tech has zero cost, probably it is a special tech for technical reasons.";
+		
+		if(desc == null)
+			desc = "Description not found";
 		return desc;
 	}
 

@@ -18,8 +18,7 @@
 </head>
 <body>
 	<div class="container">
-		<h2 class="page-header">
-			<p th:text=" ${item.realName} " />
+		<h2 class="page-header" th:text=" ${item.realName} ">
 		</h2>
 
 
@@ -31,10 +30,18 @@
 			</div>
 
 			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-				<h5>Dependencies</h5>
+				<h5>Dependends on:</h5>
 				<ul>
 					<li th:each="dep : ${deps}"><a
 						th:href="@{/item(id=${dep.name})}" th:text="${dep.realName}"></a>
+					</li>
+				</ul>
+				
+				
+				<h5>Unlocks</h5>
+				<ul>
+					<li th:each="unlock : ${unlocks}"><a
+						th:href="@{/item(id=${unlock.name})}" th:text="${unlock.realName}"></a>
 					</li>
 				</ul>
 
