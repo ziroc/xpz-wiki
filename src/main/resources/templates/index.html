@@ -26,7 +26,7 @@
 			<form action="/">
 				<div class="input-group">
 					<div class="input-group-prepend">
-						<span th:if="${result} == null" class="input-group-text">Search
+						<span th:if="${researchResult == null && itemResult == null}" class="input-group-text">Search
 							in article names: </span> <span th:if="${result} != null"
 							class="input-group-text">Search for something else: </span>
 					</div>
@@ -36,22 +36,29 @@
 				<br>
 			</form>
 
-			<div th:if="${result} == null">
+			<div th:if="${researchResult == null && itemResult == null}">
 				<p>Five random articles:</p>
 
 				<div th:each="item: ${items}">
-					<a th:href="@{/item(id=${item.name})}" th:text="${item.realName}"></a>
+					<a th:href="@{/research(id=${item.name})}" th:text="${item.realName}"></a>
 				</div>
 			</div>
 
-			<div th:if="${result} != null">
-				<span th:text="'Found ' + ${result.size()} + ' articles'"></span>
-				<div th:each="item: ${result}">
-					<a th:href="@{/item(id=${item.name})}" th:text="${item.realName}"></a>
+			<div th:if="${researchResult != null}">
+				<span th:text="'Found ' + ${researchResult.size()} + ' articles'"></span>
+				<div th:each="item: ${researchResult}">
+					<a th:href="@{/research(id=${item.name})}" th:text="${item.realName}"></a>
 				</div>
 				<br>
 			</div>
 
+			<div th:if="${itemResult != null}">
+				<span th:text="'Found ' + ${itemResult.size()} + ' items'"></span>
+				<div th:each="item: ${itemResult}">
+					<a th:href="@{/item(id=${item.name})}" th:text="${item.realName}"></a>
+				</div>
+				<br>
+			</div>
 
 		</div>
 	</div>

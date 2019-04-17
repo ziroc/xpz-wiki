@@ -1,7 +1,6 @@
 package net.avtolik.xpz_wiki.service;
 
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import net.avtolik.xpz_wiki.model.Item;
+import net.avtolik.xpz_wiki.model.Research;
 
 @Controller
 public class IndexController {
@@ -23,26 +23,36 @@ public class IndexController {
 	@GetMapping("/")
 	public String greeting(@RequestParam(name="search", required=false) String search, Model model) {
 		if(search!= null && !search.equals("")) {
-			System.out.println("searchig for "+search);
-			List<Item> result = wd.getNames().entrySet().stream().filter(i -> i.getKey().toUpperCase().contains(search.toUpperCase()))
+			System.out.println("searching for "+search);
+			
+			List<Research> researchResult = wd.getResearchNames().entrySet().stream().
+					filter(i -> i.getKey().toUpperCase().contains(search.toUpperCase()))
+					.map(i -> wd.getResearchItems().get(i.getValue())).collect(Collectors.toList());
+			System.out.println("found research: "+researchResult.size());
+			if( !researchResult.isEmpty())
+				model.addAttribute("researchResult", researchResult);
+			
+			List<Item> itemResult = wd.getItemNames().entrySet().stream().
+					filter(i -> i.getKey().toUpperCase().contains(search.toUpperCase()))
 					.map(i -> wd.getItems().get(i.getValue())).collect(Collectors.toList());
-			System.out.println("found "+result.size());
-			if(result.size()!= 0)
-				model.addAttribute("result", result);
+			System.out.println("found items: "+itemResult.size());
+			if( !itemResult.isEmpty())
+				model.addAttribute("itemResult", itemResult);
+			
 		}
 		
-		Item [] items = new Item [5];
+		Research [] researchList = new Research [5];
 
 		Random r = new Random();
-		String [] itemIds = wd.getItems().keySet().toArray(new String[0]);
+		String [] itemIds = wd.getResearchItems().keySet().toArray(new String[0]);
 
-		for (int i = 0; i < items.length; i++) {
-			int random = r.nextInt(wd.getItems().size());
-			items[i] = wd.getItems().get(itemIds[random]);
+		for (int i = 0; i < researchList.length; i++) {
+			int random = r.nextInt(wd.getResearchItems().size());
+			researchList[i] = wd.getResearchItems().get(itemIds[random]);
 		}
 
 		model.addAttribute("test", "testtt");
-		model.addAttribute("items", items);
+		model.addAttribute("items", researchList);
 		return "index";
 	}
 }

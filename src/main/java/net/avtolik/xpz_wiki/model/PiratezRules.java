@@ -4,14 +4,23 @@ import java.util.List;
 
 public class PiratezRules {
 
-	List<Item> research;
+	List<Item> items;
+	List<Research> research;
 	List<Article> ufopaedia;
 
-	public List<Item> getResearch() {
+	public List<Item> getItems() {
+		return items;
+	}
+
+	public void setItems(List<Item> items) {
+		this.items = items;
+	}
+
+	public List<Research> getResearch() {
 		return research;
 	}
 
-	public void setResearch(List<Item> research) {
+	public void setResearch(List<Research> research) {
 		this.research = research;
 	}
 
