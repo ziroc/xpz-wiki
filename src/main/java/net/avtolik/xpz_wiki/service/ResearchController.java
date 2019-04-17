@@ -58,6 +58,8 @@ public class ResearchController {
 			}
 		}
 
+		if (wd.getItems().containsKey(id))
+			model.addAttribute("showItemLink", true);
 		
 		item.setDescription(desc);
 

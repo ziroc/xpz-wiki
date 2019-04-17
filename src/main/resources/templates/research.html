@@ -48,10 +48,16 @@
 			</div>
 		</div>
 		<div class="card">
-			<div class="card-body"><a href="/">Back to search</a></div>
+			<div class="card-body">
+				<div th:if="${showItemLink == true}">
+					<a th:href="@{/item(id=${item.name})}" th:text="'Check the item stats'"></a>
+				</div>
+
+				<a href="/">Back to search</a>
+			</div>
 		</div>
 
-	
+
 
 	</div>
 	<!-- /container -->
