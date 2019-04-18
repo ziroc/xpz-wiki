@@ -14,7 +14,6 @@ import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.introspector.Property;
 import org.yaml.snakeyaml.introspector.PropertyUtils;
-import org.yaml.snakeyaml.representer.Representer;
 
 import net.avtolik.xpz_wiki.model.Article;
 import net.avtolik.xpz_wiki.model.Dictionary;
@@ -25,6 +24,8 @@ import net.avtolik.xpz_wiki.model.PiratezRules;
 
 @Controller
 public class WikiDao {
+	
+	private boolean loaded = false;
 
 	private Map<String, Object> dict;
 	private HashMap<String, Research> researchItems;
@@ -63,7 +64,7 @@ public class WikiDao {
 			}
 		}
 
-
+		loaded = true;
 	}
 
 	private void loadResearchAndArticles() {
@@ -185,6 +186,14 @@ public class WikiDao {
 
 	public void setArticles(HashMap<String, Article> articles) {
 		this.articles = articles;
+	}
+
+	public boolean isLoaded() {
+		return loaded;
+	}
+
+	public void setLoaded(boolean loaded) {
+		this.loaded = loaded;
 	}
 
 

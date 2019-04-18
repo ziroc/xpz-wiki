@@ -22,6 +22,12 @@ public class IndexController {
 
 	@GetMapping("/")
 	public String greeting(@RequestParam(name="search", required=false) String search, Model model) {
+		
+		if(wd == null || !wd.isLoaded()) {
+			model.addAttribute("loaded", false);
+			return "index";
+		}
+		
 		if(search!= null && !search.equals("")) {
 			System.out.println("searching for "+search);
 			
@@ -51,7 +57,6 @@ public class IndexController {
 			researchList[i] = wd.getResearchItems().get(itemIds[random]);
 		}
 
-		model.addAttribute("test", "testtt");
 		model.addAttribute("items", researchList);
 		return "index";
 	}

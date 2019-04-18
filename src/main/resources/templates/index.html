@@ -38,8 +38,13 @@
 			One of the goals is to help you if you want to research something specific, to find its prerequisites.
 			 At a later time, it will also support the items and their stats and description.
 			</p>
+			
+			<div th:if="${loaded != null && !loaded} ">
+				<p> The site is not yet loaded. Please reload after 20 seconds.
+				</p>
+			</div>
 
-			<div th:if="${researchResult == null && itemResult == null}">
+			<div th:if="${researchResult == null && itemResult == null && items != null } ">
 				<p>Five random research articles:</p>
 
 				<div th:each="item: ${items}">
