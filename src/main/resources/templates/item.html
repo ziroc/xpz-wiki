@@ -45,7 +45,7 @@
 					</div>
 				</div>
 				<div th:if="${ammoList != null}">
-					Compatime ammo (dmg):
+					Compatible ammo (dmg):
 					<ul>
 						<li th:each="it: ${ammoList}"><a
 							th:href="@{/item(id=${it.name})}" th:text="${it.realName}"></a>

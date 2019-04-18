@@ -18,7 +18,7 @@
 </head>
 <body>
 	<div class="container">
-		<h2 class="page-header">Welcome to the X-Piratez Wiki!</h2>
+		<h2 class="page-header">Welcome to a X-Piratez Wiki*!</h2>
 		<div class="jumbotron2">
 
 
@@ -26,18 +26,21 @@
 			<form action="/">
 				<div class="input-group">
 					<div class="input-group-prepend">
-						<span th:if="${researchResult == null && itemResult == null}" class="input-group-text">Search
-							in article names: </span> <span th:if="${result} != null"
-							class="input-group-text">Search for something else: </span>
+						<span th:if="${researchResult == null && itemResult == null}" class="input-group-text">Search for a tech or item: </span> 
+						<span th:if="${result} != null" class="input-group-text">Search for something else: </span>
 					</div>
 					<input class="form-control" type="text" name="search">
 				</div>
 
 				<br>
 			</form>
+			<p>* Actually not a real wiki. This site is just gives you an opportunity to read up on the techs found in the game. 
+			One of the goals is to help you if you want to research something specific, to find its prerequisites.
+			 At a later time, it will also support the items and their stats and description.
+			</p>
 
 			<div th:if="${researchResult == null && itemResult == null}">
-				<p>Five random articles:</p>
+				<p>Five random research articles:</p>
 
 				<div th:each="item: ${items}">
 					<a th:href="@{/research(id=${item.name})}" th:text="${item.realName}"></a>
