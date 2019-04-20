@@ -29,30 +29,13 @@
 			</div>
 
 			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-				<div th:if="${item.power != null }">
-					Damage: <span th:text=" ${item.power} "></span>
-				</div>
 
-				<div th:if="${item.accuracyMelee != null }">
-					Melee Accuracy: <span th:text=" ${item.accuracyMelee} "></span>
-				</div>
+				<div
+					th:insert="${item.power != null || ammoList != null} ? ~{fragments/weapon :: weapon} : ~{}">...</div>
 
-				<div th:if="${item.damageBonus != null}">
-					Damage bonus:
-					<div th:each="it: ${item.damageBonus}">
-						<span style="padding-left: 15px"
-							th:text=" ${it.key + ' : ' + it.value} "></span>
-					</div>
-				</div>
-				<div th:if="${ammoList != null}">
-					Compatible ammo (dmg):
-					<ul>
-						<li th:each="it: ${ammoList}"><a
-							th:href="@{/item(id=${it.name})}" th:text="${it.realName}"></a>
-							 <span th:text="'('+ ${it.power} +')' "></span> </li>
-					</ul>
-				</div>
 			</div>
+
+
 			<div class="card">
 				<div class="card-body">
 					<a href="/">Back to search</a>
@@ -60,15 +43,15 @@
 			</div>
 
 
-
 		</div>
-		<!-- /container -->
-		<!-- Bootstrap core JavaScript
+	</div>
+	<!-- /container -->
+	<!-- Bootstrap core JavaScript
 ================================================== -->
-		<!-- Placed at the end of the document so the pages load faster -->
-		<script
-			src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-		<script src="../static/js/bootstrap.js" th:href="@{/js/bootstrap.js}"></script>
-		<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="../static/js/bootstrap.js" th:href="@{/js/bootstrap.js}"></script>
+	<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 </body>
 </html>

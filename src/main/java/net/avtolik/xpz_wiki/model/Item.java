@@ -19,6 +19,19 @@ public class Item {
 	Integer accuracyMelee;
 	Integer damageType;
 	Integer power;
+	
+	Integer tuAuto;
+	Integer tuSnap;
+	Integer tuAimed;
+	
+	Integer accuracyAuto;
+	Integer accuracySnap;
+	Integer accuracyAimed;
+	
+	Integer autoRange;
+	Integer snapRange;
+	Integer aimRange;
+	
 	Map <String, Object> damageBonus;
 	private List<String> compatibleAmmo;
 	
@@ -82,6 +95,60 @@ public class Item {
 	}
 	public void setCompatibleAmmo(List<String> compatibleAmmo) {
 		this.compatibleAmmo = compatibleAmmo;
+	}
+	public Integer getTuAuto() {
+		return tuAuto;
+	}
+	public Integer getTuSnap() {
+		return tuSnap;
+	}
+	public Integer getTuAimed() {
+		return tuAimed;
+	}
+	public void setTuAuto(Integer tuAuto) {
+		this.tuAuto = tuAuto;
+	}
+	public void setTuSnap(Integer tuSnap) {
+		this.tuSnap = tuSnap;
+	}
+	public void setTuAimed(Integer tuAimed) {
+		this.tuAimed = tuAimed;
+	}
+	public Integer getAutoRange() {
+		return autoRange;
+	}
+	public Integer getSnapRange() {
+		return snapRange;
+	}
+	public Integer getAimRange() {
+		return aimRange;
+	}
+	public void setAutoRange(Integer autoRange) {
+		this.autoRange = autoRange;
+	}
+	public void setSnapRange(Integer snapRange) {
+		this.snapRange = snapRange;
+	}
+	public void setAimRange(Integer aimRange) {
+		this.aimRange = aimRange;
+	}
+	public Integer getAccuracyAuto() {
+		return accuracyAuto;
+	}
+	public Integer getAccuracySnap() {
+		return accuracySnap;
+	}
+	public Integer getAccuracyAimed() {
+		return accuracyAimed;
+	}
+	public void setAccuracyAuto(Integer accuracyAuto) {
+		this.accuracyAuto = accuracyAuto;
+	}
+	public void setAccuracySnap(Integer accuracySnap) {
+		this.accuracySnap = accuracySnap;
+	}
+	public void setAccuracyAimed(Integer accuracyAimed) {
+		this.accuracyAimed = accuracyAimed;
 	}
 	
 	

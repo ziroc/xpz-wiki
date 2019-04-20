@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+	<div th:fragment="weapon">
+		<div th:if="${item.power != null }">
+			Damage: <span th:text=" ${item.power} "></span>
+		</div>
+
+		<div th:if="${item.accuracyMelee != null }">
+			Melee Accuracy: <span th:text=" ${item.accuracyMelee} "></span>
+		</div>
+
+
+
+		<!--  Ranged -->
+		<div
+			th:if="${item.tuAuto != null || item.tuSnap != null || item.tuAimed != null}">
+			Ranged TU Cost (range):
+			<ul>
+				<li th:if="${item.tuAuto != null }">Auto: <span
+					th:text=" ${item.tuAuto} + ' (' + ${item.autoRange}+')'  "></span>
+				</li>
+
+				<li th:if="${item.tuSnap != null }">Snap: <span
+					th:text=" ${item.tuSnap}  + ' (' + ${item.snapRange}+')' "></span>
+				</li>
+
+				<li th:if="${item.tuAimed != null }">Aimed: <span
+					th:text=" ${item.tuAimed} + ' (' + ${item.aimRange}+')'   "></span>
+				</li>
+			</ul>
+		</div>
+
+		<!-- Other -->
+		<div th:if="${item.damageBonus != null}">
+			<br /> Damage bonus:
+			<div th:each="it: ${item.damageBonus}">
+				<span style="padding-left: 15px"
+					th:text=" ${it.key + ' : ' + it.value} "></span>
+			</div>
+		</div>
+
+		<br>
+		<!-- Ammo-->
+		<div th:if="${ammoList != null}">
+			Compatible ammo (dmg):
+			<ul>
+				<li th:each="it: ${ammoList}"><a
+					th:href="@{/item(id=${it.name})}" th:text="${it.realName}"></a> <span
+					th:text="'('+ ${it.power} +')' "></span></li>
+			</ul>
+		</div>
+
+		<div th:if="${item.weight != null }">
+			Weight: <span th:text=" ${item.weight} "></span>
+		</div>
+	</div>
+
+</body>
+
+</html>
