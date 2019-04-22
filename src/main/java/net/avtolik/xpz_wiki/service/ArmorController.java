@@ -1,8 +1,5 @@
 package net.avtolik.xpz_wiki.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,7 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import net.avtolik.xpz_wiki.model.Armor;
-import net.avtolik.xpz_wiki.model.Item;
 
 @Controller
 public class ArmorController {
@@ -46,14 +42,18 @@ public class ArmorController {
 		return "armor";
 	}
 
-	private String getDescription(Armor item) {
+	private String getDescription(Armor armor) {
 		String desc ;
-		desc = (String) wd.getDict().get(item.getName()+ PREFIX1);
+		desc = (String) wd.getDict().get(armor.getName()+ PREFIX1);
+		System.out.println("1" + desc);
 
 		if(desc == null)
-			desc = (String) wd.getDict().get(item.getName()+ PREFIX2);
+			desc = (String) wd.getDict().get(armor.getName()+ PREFIX2);
 
-
+		if(desc == null) {
+			desc = (String) wd.getDict().get(wd.getArticles().get(armor.getName()).getText());
+		}
+		
 		if(desc == null)
 			desc = "Description not found";
 		return desc;

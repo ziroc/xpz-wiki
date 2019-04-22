@@ -14,8 +14,8 @@ public class Armor {
 	Integer frontArmor;
 	Integer sideArmor;
 	Integer rearArmor;
-	
 	Integer underArmor;
+	
 	List<Double> damageModifier;
 	String specialWeapon;
 	

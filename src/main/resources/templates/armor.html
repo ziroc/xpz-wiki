@@ -30,6 +30,11 @@
 
 			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
 
+				Front Armor: <span th:text=" ${item.frontArmor} "></span>				<br>
+				Side Armor: <span th:text=" ${item.sideArmor} "></span> <br>
+				Rear Armor: <span th:text=" ${item.rearArmor} "></span><br>
+				Under Armor: <span th:text=" ${item.underArmor} "></span><br>
+
 				<div th:if="${item.weight != null }">
 					Weight: <span th:text=" ${item.weight} "></span>
 				</div>
