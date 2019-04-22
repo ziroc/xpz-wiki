@@ -67,6 +67,14 @@
 				</div>
 				<br>
 			</div>
+			
+			<div th:if="${armorResult != null}">
+				<span th:text="'Found ' + ${armorResult.size()} + ' items'"></span>
+				<div th:each="item: ${armorResult}">
+					<a th:href="@{/armor(id=${item.name})}" th:text="${item.realName}"></a>
+				</div>
+				<br>
+			</div>
 
 		</div>
 	</div>

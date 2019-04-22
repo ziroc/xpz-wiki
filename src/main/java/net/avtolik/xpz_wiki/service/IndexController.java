@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import net.avtolik.xpz_wiki.model.Armor;
 import net.avtolik.xpz_wiki.model.Item;
 import net.avtolik.xpz_wiki.model.Research;
 
@@ -44,6 +45,13 @@ public class IndexController {
 			System.out.println("found items: "+itemResult.size());
 			if( !itemResult.isEmpty())
 				model.addAttribute("itemResult", itemResult);
+			
+			List<Armor> armorResult = wd.getArmorNames().entrySet().stream().
+					filter(i -> i.getKey().toUpperCase().contains(search.toUpperCase()))
+					.map(i -> wd.getArmors().get(i.getValue())).collect(Collectors.toList());
+			System.out.println("found items: "+armorResult.size());
+			if( !itemResult.isEmpty())
+				model.addAttribute("armorResult", armorResult);
 			
 		}
 		

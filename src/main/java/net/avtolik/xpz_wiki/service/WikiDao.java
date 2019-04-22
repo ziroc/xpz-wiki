@@ -9,17 +9,17 @@ import java.util.stream.Collectors;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Controller;
-import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.introspector.Property;
 import org.yaml.snakeyaml.introspector.PropertyUtils;
 
+import net.avtolik.xpz_wiki.model.Armor;
 import net.avtolik.xpz_wiki.model.Article;
 import net.avtolik.xpz_wiki.model.Dictionary;
 import net.avtolik.xpz_wiki.model.Item;
-import net.avtolik.xpz_wiki.model.Research;
 import net.avtolik.xpz_wiki.model.PiratezRules;
+import net.avtolik.xpz_wiki.model.Research;
 
 
 @Controller
@@ -29,9 +29,11 @@ public class WikiDao {
 
 	private Map<String, Object> dict;
 	private HashMap<String, Research> researchItems;
-	private HashMap<String, Item> items;
 	private HashMap<String, String> researchNames;
+	private HashMap<String, Item> items;
 	private HashMap<String, String> itemNames;
+	private HashMap<String, Armor> armors;
+	private HashMap<String, String> armorNames;
 	private HashMap<String, Article> articles;
 
 	@EventListener(ApplicationReadyEvent.class)
@@ -41,26 +43,35 @@ public class WikiDao {
 		loadDictionary();
 		researchNames = new HashMap<>(researchItems.size());
 		itemNames = new HashMap<>(items.size());
-
+		armorNames = new HashMap<>(armors.size());
+		
 		// Load real names for research items
 		for (Map.Entry<String, Research> entry : researchItems.entrySet()) {
 			String name = entry.getValue().getName();
 			Object realName = dict.get(name) ;
-			if(realName!=null) {
+			if(realName != null) {
 				entry.getValue().setRealName(realName.toString()); 
 				researchNames.put(realName.toString(), entry.getKey());
 			}
 		}
 
-		// Load real names for research items
+		// Load real names for  items
 		for (Map.Entry<String, Item> entry : items.entrySet()) {
 			String name = entry.getValue().getName();
-			if(name.toUpperCase().contains("BONE"))
-				System.out.println(entry.getValue().getName());
 			Object realName = dict.get(name) ;
 			if(realName != null) {
 				entry.getValue().setRealName(realName.toString()); 
 				itemNames.put(realName.toString(), entry.getKey());
+			}
+		}
+		
+		// Load real names for  armors
+		for (Map.Entry<String, Armor> entry : armors.entrySet()) {
+			String name = entry.getValue().getName();
+			Object realName = dict.get(name) ;
+			if(realName != null) {
+				entry.getValue().setRealName(realName.toString()); 
+				armorNames.put(realName.toString(), entry.getKey());
 			}
 		}
 
@@ -93,6 +104,7 @@ public class WikiDao {
 			List<Research> researchItemsTemp = rules.getResearch() ;
 			List<Article> articleList = rules.getUfopaedia();
 			List<Item> itemList = rules.getItems();
+			List<Armor> armorList = rules.getArmors();
 			List<Research> filteredResearchItems = researchItemsTemp.stream().filter(i -> i.getDelete() == null).collect(Collectors.toList());
 			List<Article> filteredArticles = articleList.stream().filter(i -> i.getDelete() == null).collect(Collectors.toList());
 			List<Item> filteredItems = itemList.stream().filter(i -> i.getDelete() == null).collect(Collectors.toList());
@@ -100,9 +112,13 @@ public class WikiDao {
 			researchItems = new HashMap<>();
 			articles = new HashMap<>();
 			items = new HashMap<>();
+			armors = new HashMap<>();
+			
 			filteredResearchItems.stream().forEach(i -> researchItems.put(i.getName(), i));
 			filteredArticles.stream().forEach(a -> articles.put(a.getId(), a));
 			filteredItems.stream().forEach(a -> items.put(a.getName(), a));
+			armorList.stream().forEach(a -> armors.put(a.getName(), a));
+			
 
 			System.out.println("Reseach items and articles loaded");
 			//		} catch (IOException e) {
@@ -194,6 +210,14 @@ public class WikiDao {
 
 	public void setLoaded(boolean loaded) {
 		this.loaded = loaded;
+	}
+
+	public HashMap<String, Armor> getArmors() {
+		return armors;
+	}
+
+	public HashMap<String, String> getArmorNames() {
+		return armorNames;
 	}
 
 

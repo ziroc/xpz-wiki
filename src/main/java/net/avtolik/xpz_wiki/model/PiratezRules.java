@@ -5,8 +5,10 @@ import java.util.List;
 public class PiratezRules {
 
 	List<Item> items;
+	List<Armor> armors;
 	List<Research> research;
 	List<Article> ufopaedia;
+	
 
 	public List<Item> getItems() {
 		return items;
@@ -30,6 +32,14 @@ public class PiratezRules {
 
 	public void setUfopaedia(List<Article> ufopaedia) {
 		this.ufopaedia = ufopaedia;
+	}
+
+	public List<Armor> getArmors() {
+		return armors;
+	}
+
+	public void setArmors(List<Armor> armors) {
+		this.armors = armors;
 	}
 
 	
