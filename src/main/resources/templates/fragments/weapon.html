@@ -18,18 +18,18 @@
 		<!--  Ranged -->
 		<div
 			th:if="${item.tuAuto != null || item.tuSnap != null || item.tuAimed != null}">
-			Ranged TU Cost (range):
+			Ranged TU, ACC, (range):
 			<ul>
 				<li th:if="${item.tuAuto != null }">Auto: <span
-					th:text=" ${item.tuAuto} + ' (' + ${item.autoRange}+')'  "></span>
+					th:text=" ${item.tuAuto} + 'TU, '+${item.accuracyAuto} + '% (' + ${item.autoRange}+')'  "></span>
 				</li>
 
 				<li th:if="${item.tuSnap != null }">Snap: <span
-					th:text=" ${item.tuSnap}  + ' (' + ${item.snapRange}+')' "></span>
+					th:text=" ${item.tuSnap} + 'TU, '+${item.accuracySnap} + '% (' + ${item.snapRange}+')' "></span>
 				</li>
 
 				<li th:if="${item.tuAimed != null }">Aimed: <span
-					th:text=" ${item.tuAimed} + ' (' + ${item.aimRange}+')'   "></span>
+					th:text=" ${item.tuAimed} +'TU, '+${item.accuracyAimed} + '% (' + ${item.aimRange}+')'   "></span>
 				</li>
 			</ul>
 		</div>
@@ -39,7 +39,7 @@
 			<br /> Damage bonus:
 			<div th:each="it: ${item.damageBonus}">
 				<span style="padding-left: 15px"
-					th:text=" ${it.key + ' : ' + it.value} "></span>
+					th:text=" ${ it.value  + '*' + it.key} "></span>
 			</div>
 		</div>
 
