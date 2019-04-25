@@ -43,11 +43,18 @@ public class ResearchController {
 			for (String dep : item.getDependencies()) {
 				Research i = new Research();
 				i.setName(dep);
-				i.setRealName(wd.getResearchItems().get(dep).getRealName());
+				Research research = wd.getResearchItems().get(dep);
+				if(research == null) {
+					i.setName("#");
+					i.setRealName((String) wd.getDict().get(dep));
+					deps.add(i);
+					continue;
+				}
+				i.setRealName(research.getRealName());
 				deps.add(i);
 			}
 		}
-		
+
 		List<Research> unlocks = new ArrayList<>();
 		if (item.getUnlocks() != null) {
 			for (String unlock : item.getUnlocks()) {
@@ -60,7 +67,7 @@ public class ResearchController {
 
 		if (wd.getItems().containsKey(id))
 			model.addAttribute("showItemLink", true);
-		
+
 		item.setDescription(desc);
 
 		model.addAttribute("item", item);
@@ -99,7 +106,7 @@ public class ResearchController {
 		}
 		if(desc == null && item.getCost() == 0) 
 			desc = "The tech has zero cost, probably it is a special tech for technical reasons.";
-		
+
 		if(desc == null)
 			desc = "Description not found";
 		return desc;

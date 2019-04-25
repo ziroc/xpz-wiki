@@ -24,7 +24,7 @@ import net.avtolik.xpz_wiki.model.Research;
 
 @Controller
 public class WikiDao {
-	
+
 	private boolean loaded = false;
 
 	private Map<String, Object> dict;
@@ -44,7 +44,7 @@ public class WikiDao {
 		researchNames = new HashMap<>(researchItems.size());
 		itemNames = new HashMap<>(items.size());
 		armorNames = new HashMap<>(armors.size());
-		
+
 		// Load real names for research items
 		for (Map.Entry<String, Research> entry : researchItems.entrySet()) {
 			String name = entry.getValue().getName();
@@ -64,7 +64,7 @@ public class WikiDao {
 				itemNames.put(realName.toString(), entry.getKey());
 			}
 		}
-		
+
 		// Load real names for  armors
 		for (Map.Entry<String, Armor> entry : armors.entrySet()) {
 			String name = entry.getValue().getName();
@@ -81,14 +81,12 @@ public class WikiDao {
 	private void loadResearchAndArticles() {
 
 		try {
-
 			Constructor c = new Constructor(PiratezRules.class);
 			c.setPropertyUtils(new PropertyUtils() {
 				@Override
 				public Property getProperty(Class<? extends Object> type, String name)  {
-					if ( name.equals("type")) {
+					if ( name.equals("type")) 
 						name = "name";
-					}
 					return super.getProperty(type, name);
 				}
 			});
@@ -113,12 +111,12 @@ public class WikiDao {
 			articles = new HashMap<>();
 			items = new HashMap<>();
 			armors = new HashMap<>();
-			
+
 			filteredResearchItems.stream().forEach(i -> researchItems.put(i.getName(), i));
 			filteredArticles.stream().forEach(a -> articles.put(a.getId(), a));
 			filteredItems.stream().forEach(a -> items.put(a.getName(), a));
 			armorList.stream().forEach(a -> armors.put(a.getName(), a));
-			
+
 
 			System.out.println("Reseach items and articles loaded");
 			//		} catch (IOException e) {
