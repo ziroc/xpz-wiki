@@ -59,7 +59,7 @@ public class ItemController {
 			desc = (String) wd.getDict().get(item.getName()+ PREFIX2);
 
 
-		if(desc == null)
+		if(desc == null || item.getArmorName() != null)
 			desc = "Description not found";
 		return desc;
 	}

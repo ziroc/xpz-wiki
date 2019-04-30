@@ -20,8 +20,6 @@
 	<div class="container">
 		<h2 class="page-header" th:text=" ${item.realName} "></h2>
 
-
-
 		<div class="row">
 			<div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
 				<p
@@ -58,17 +56,20 @@
 				</div>
 			</div>
 
-
-			<div class="card">
-				<div class="card-body">
-					<a href="/">Back to search</a>
-				</div>
-			</div>
-
-
 		</div>
+
+		<div class="card">
+			<div class="card-body">
+				<a href="/">Back to search</a>
+			</div>
+		</div>
+
+
+
 	</div>
 	<!-- /container -->
+	
+	<div th:insert="~{fragments/footer :: footer} ">...</div>
 	<!-- Bootstrap core JavaScript
 ================================================== -->
 	<!-- Placed at the end of the document so the pages load faster -->

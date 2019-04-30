@@ -16,7 +16,7 @@ public class Research {
 	int cost;
 	int points;
 	boolean destroyItem;
-	String needItem;
+	boolean needItem;
 	List<String> dependencies;
 	List<String> unlocks;
 	List<String> requiresBaseFunc;
@@ -57,12 +57,7 @@ public class Research {
 	public void setDestroyItem(boolean destroyItem) {
 		this.destroyItem = destroyItem;
 	}
-	public String getNeedItem() {
-		return needItem;
-	}
-	public void setNeedItem(String needItem) {
-		this.needItem = needItem;
-	}
+	
 	public List<String> getDependencies() {
 		return dependencies;
 	}
@@ -123,6 +118,12 @@ public class Research {
 	}
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	public boolean isNeedItem() {
+		return needItem;
+	}
+	public void setNeedItem(boolean needItem) {
+		this.needItem = needItem;
 	}
 	@Override
 	public String toString() {

@@ -70,9 +70,13 @@ public class WikiDao {
 			Armor armor = entry.getValue();
 			Object realName = dict.get(armor.getName()) ;
 			if(realName != null) {
+				System.out.println("real name  found for :" + armor.getName() + "  "+ realName);
 				entry.getValue().setRealName(realName.toString()); 
 				armorNames.put(realName.toString(), entry.getKey());
 			}
+			else 
+				System.out.println("real name not found for :" + armor.getName());
+			
 			if(armor.getStoreItem() != null) {
 				System.out.println("Armor " + armor.getName() +" has store name " +armor.getStoreItem());
 				Item item = items.get(armor.getStoreItem());
