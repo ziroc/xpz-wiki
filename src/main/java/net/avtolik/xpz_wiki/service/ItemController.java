@@ -27,9 +27,14 @@ public class ItemController {
 		Item item = wd.getItems().get(id);
 
 		if(item == null) {
-			model.addAttribute("error", "Item not found!");
+			Item ret = new Item();
+			ret.setRealName("Not found.");
+			model.addAttribute("item", ret);
+			model.addAttribute("notFound", true);
 			return "item";
 		}
+		model.addAttribute("notFound", false);
+		System.out.println("Item found + "+item.getRealName());
 		
 		List<Item> ammoList = new ArrayList<>();
 		if(item.getCompatibleAmmo() != null && !item.getCompatibleAmmo().isEmpty()) {
@@ -39,7 +44,6 @@ public class ItemController {
 			model.addAttribute("ammoList", ammoList);
 		}
 
-		System.out.println("Item found + "+item);
 		String desc = getDescription(item);
 
 		desc = desc.replaceAll("\\{NEWLINE\\}", "\n");

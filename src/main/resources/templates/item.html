@@ -10,7 +10,7 @@
 <meta name="author" content="">
 <link rel="icon" href="../../favicon.ico" />
 
-<title th:text="'XPZ WIKI - ' + ${item.realName}"></title>
+<title th:text=" ${ 'XPZ WIKI - ' + item?.realName}">XPZ WIKI</title>
 
 <!-- Bootstrap core CSS -->
 <link href="../static/css/bootstrap.css" rel="stylesheet"
@@ -18,32 +18,36 @@
 </head>
 <body>
 	<div class="container">
-		<h2 class="page-header" th:text=" ${item.realName} "></h2>
+		<h2 class="page-header" th:text=" ${item?.realName} ">Item Not found</h2>
 
 
 
 		<div class="row">
 			<div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
-
-				<div
-					th:with="isStoreItem = ${item.armorName != null && #strings.startsWith(item.description,'Description not found')  }">
-					<div th:if="${isStoreItem}">
-						This is a store item for this <a
-							th:href="@{/armor(id=${item.armorName})}" th:text="'armor'">
-						</a>
+				<div th:if="${!notFound}">
+					<div
+						th:with="isStoreItem = ${item.armorName != null && #strings.startsWith(item.description,'Description not found')  }">
+						<div th:if="${!isStoreItem}">
+							<p
+								th:utext=" ${#strings.replace(#strings.escapeXml(item.description),newLineChar,'&lt;br&gt;')} " />
+						</div>
+						
+						<div th:if="${isStoreItem}">
+							This is a store item for this <a th:href="@{/armor(id=${item.armorName})}" th:text="'armor'">
+							</a>
+						</div>
 					</div>
-					<div th:if="${!isStoreItem}">
-						<p
-							th:utext=" ${#strings.replace(#strings.escapeXml(item.description),newLineChar,'&lt;br&gt;')} " />
-					</div>
+				</div>
+				<div th:if="${notFound}">
+					Item not found.
 				</div>
 			</div>
 
 			<!-- Side column -->
 			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
 
-				<div
-					th:insert="${item.power != null || ammoList != null} ? ~{fragments/weapon :: weapon} : ~{}">...</div>
+				<div th:if="${!notFound}"
+					th:insert="${ item != null && (item.power != null || ammoList != null) } ? ~{fragments/weapon :: weapon} : ~{}">...</div>
 
 			</div>
 

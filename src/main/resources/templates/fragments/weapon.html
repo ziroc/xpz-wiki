@@ -21,15 +21,15 @@
 			Ranged TU, ACC, (range):
 			<ul>
 				<li th:if="${item.tuAuto != null }">Auto: <span
-					th:text=" ${item.tuAuto} + 'TU, '+${item.accuracyAuto} + '% (' + ${item.autoRange}+')'  "></span>
+					th:text=" ${item.tuAuto} + 'TU, '+${item.accuracyAuto} + '% (' + ${item?.autoRange}+')'  "></span>
 				</li>
 
 				<li th:if="${item.tuSnap != null }">Snap: <span
-					th:text=" ${item.tuSnap} + 'TU, '+${item.accuracySnap} + '% (' + ${item.snapRange}+')' "></span>
+					th:text=" ${item.tuSnap} + 'TU, '+${item.accuracySnap} + '%'"></span> <span th:if="${item.snapRange != null}" th:text="', (' + ${item?.snapRange}+')' "></span>
 				</li>
 
 				<li th:if="${item.tuAimed != null }">Aimed: <span
-					th:text=" ${item.tuAimed} +'TU, '+${item.accuracyAimed} + '% (' + ${item.aimRange}+')'   "></span>
+					th:text=" ${item.tuAimed} +'TU, '+${item.accuracyAimed} + '% (' + ${item?.aimRange}+')'   "></span>
 				</li>
 			</ul>
 		</div>
@@ -50,7 +50,7 @@
 			<ul>
 				<li th:each="it: ${ammoList}"><a
 					th:href="@{/item(id=${it.name})}" th:text="${it.realName}"></a> <span
-					th:text="'('+ ${it.power} +')' "></span></li>
+					th:text="'('+ ${it?.power} +')' "></span></li>
 			</ul>
 		</div>
 

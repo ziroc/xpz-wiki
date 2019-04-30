@@ -38,8 +38,8 @@
 				<br>Damage modifiers:  
 				<div th:each="modd,iter : ${armorModifiers}">
 					<div th:if="${item.damageModifier[iter.index] != 1 }">
-					    <span style="padding-left: 15px" th:text="${modd}">key</span>:
-					  	<span th:text="${item.damageModifier[iter.index]*100}">key</span>%
+					    <span style="padding-left: 15px" th:text="${modd}">mod name</span>:
+					  	<span th:text="${#numbers.formatDecimal(item.damageModifier[iter.index]*100, 0, 0)}">modifier</span>%
 				  	</div>
 				</div>
 				
