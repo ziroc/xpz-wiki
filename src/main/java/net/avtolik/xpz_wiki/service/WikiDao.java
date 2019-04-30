@@ -67,11 +67,22 @@ public class WikiDao {
 
 		// Load real names for  armors
 		for (Map.Entry<String, Armor> entry : armors.entrySet()) {
-			String name = entry.getValue().getName();
-			Object realName = dict.get(name) ;
+			Armor armor = entry.getValue();
+			Object realName = dict.get(armor.getName()) ;
 			if(realName != null) {
 				entry.getValue().setRealName(realName.toString()); 
 				armorNames.put(realName.toString(), entry.getKey());
+			}
+			if(armor.getStoreItem() != null) {
+				System.out.println("Armor " + armor.getName() +" has store name " +armor.getStoreItem());
+				Item item = items.get(armor.getStoreItem());
+				
+				if(item != null) {
+					System.out.println("found item for it: " + item.getName());
+					item.setArmorName(armor.getName());
+				}
+				else
+					System.out.println("item not found");
 			}
 		}
 

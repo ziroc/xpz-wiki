@@ -30,12 +30,30 @@
 
 			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
 
-				Front Armor: <span th:text=" ${item.frontArmor} "></span>				<br>
+				Front Armor: <span th:text=" ${item.frontArmor} "></span> <br>
 				Side Armor: <span th:text=" ${item.sideArmor} "></span> <br>
-				Rear Armor: <span th:text=" ${item.rearArmor} "></span><br>
-				Under Armor: <span th:text=" ${item.underArmor} "></span><br>
+				Rear Armor: <span th:text=" ${item.rearArmor} "></span> <br>
+				Under Armor: <span th:text=" ${item.underArmor} "></span> <br>
 
+				
+				
+				<br>Damage modifiers:  
+				<div th:each="modd,iter : ${armorModifiers}">
+					<div th:if="${item.damageModifier[iter.index] != 1 }">
+					    <span style="padding-left: 15px" th:text="${modd}">key</span>:
+					  	<span th:text="${item.damageModifier[iter.index]*100}">key</span>%
+				  	</div>
+				</div>
+				
+				<br>Stats:
+				<div th:each="stat : ${item.stats}">				
+				    <span style="padding-left: 15px" th:text="${stat.key}">key</span>:
+				    <span th:if="${stat.value >= 0 }" th:text="'+' + ${stat.value}">value</span>
+				    <span th:if="${stat.value < 0 }" th:text=" ${stat.value}">value</span>
+				</div>
+				
 				<div th:if="${item.weight != null }">
+					<br>
 					Weight: <span th:text=" ${item.weight} "></span>
 				</div>
 			</div>

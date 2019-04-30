@@ -40,18 +40,18 @@ public class ResearchController {
 
 		List<Research> deps = new ArrayList<>();
 		if (item.getDependencies() != null) {
-			for (String dep : item.getDependencies()) {
-				Research i = new Research();
-				i.setName(dep);
-				Research research = wd.getResearchItems().get(dep);
+			for (String depName : item.getDependencies()) {
+				Research depResearch = new Research();
+				depResearch.setName(depName);
+				Research research = wd.getResearchItems().get(depName);
 				if(research == null) {
-					i.setName("#");
-					i.setRealName((String) wd.getDict().get(dep));
-					deps.add(i);
+					depResearch.setName("#");
+					depResearch.setRealName((String) wd.getDict().get(depName));
+					deps.add(depResearch);
 					continue;
 				}
-				i.setRealName(research.getRealName());
-				deps.add(i);
+				depResearch.setRealName(research.getRealName());
+				deps.add(depResearch);
 			}
 		}
 

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import net.avtolik.xpz_wiki.model.Armor;
+import net.avtolik.xpz_wiki.model.Constants;
 
 @Controller
 public class ArmorController {
@@ -37,6 +38,7 @@ public class ArmorController {
 
 		item.setDescription(desc);
 
+		model.addAttribute("armorModifiers", Constants.armorModifiers);
 		model.addAttribute("item", item);
 		model.addAttribute("newLineChar", '\n');
 		return "armor";
@@ -45,7 +47,6 @@ public class ArmorController {
 	private String getDescription(Armor armor) {
 		String desc ;
 		desc = (String) wd.getDict().get(armor.getName()+ PREFIX1);
-		System.out.println("1" + desc);
 
 		if(desc == null)
 			desc = (String) wd.getDict().get(armor.getName()+ PREFIX2);

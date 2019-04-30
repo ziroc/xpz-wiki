@@ -32,6 +32,8 @@ public class Item {
 	Integer snapRange;
 	Integer aimRange;
 	
+	String armorName;
+	
 	Map <String, Object> damageBonus;
 	private List<String> compatibleAmmo;
 	
@@ -149,6 +151,12 @@ public class Item {
 	}
 	public void setAccuracyAimed(Integer accuracyAimed) {
 		this.accuracyAimed = accuracyAimed;
+	}
+	public String getArmorName() {
+		return armorName;
+	}
+	public void setArmorName(String armorName) {
+		this.armorName = armorName;
 	}
 	
 	

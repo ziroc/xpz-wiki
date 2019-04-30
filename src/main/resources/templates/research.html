@@ -32,8 +32,10 @@
 					th:utext=" ${#strings.replace(#strings.escapeXml(item.description),newLineChar,'&lt;br&gt;')} " />
 			</div>
 
+
+			<!-- Side column -->
 			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-				<h5>Dependends on:</h5>
+				<h5>Depends on:</h5>
 				<ul>
 					<li th:each="dep : ${deps}"><a
 						th:href="@{/research(id=${dep.name})}" th:text="${dep.realName}"></a>
@@ -50,10 +52,12 @@
 
 			</div>
 		</div>
+		
+		<!-- Footer  -->
 		<div class="card">
 			<div class="card-body">
 				<div th:if="${showItemLink == true}">
-					<a th:href="@{/item(id=${item.name})}" th:text="'Check the item stats '"> </a> <span class="badge badge-light">New</span>
+					<a th:href="@{/item(id=${item.name})}" th:text="'This tech has a related item '"> </a> <span class="badge badge-light">New</span>
 				</div>
 
 				<a href="/">Back to search</a>

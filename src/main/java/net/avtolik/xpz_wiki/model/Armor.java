@@ -10,7 +10,7 @@ public class Armor {
 	String description;
 	Integer weight;
 	Integer personalLight;
-	Map <String, Object> stats;
+	Map <String, Integer> stats;
 	Integer frontArmor;
 	Integer sideArmor;
 	Integer rearArmor;
@@ -30,7 +30,7 @@ public class Armor {
 	public Integer getPersonalLight() {
 		return personalLight;
 	}
-	public Map<String, Object> getStats() {
+	public Map<String, Integer> getStats() {
 		return stats;
 	}
 	public Integer getFrontArmor() {
@@ -60,7 +60,7 @@ public class Armor {
 	public void setPersonalLight(Integer personalLight) {
 		this.personalLight = personalLight;
 	}
-	public void setStats(Map<String, Object> stats) {
+	public void setStats(Map<String, Integer> stats) {
 		this.stats = stats;
 	}
 	public void setFrontArmor(Integer frontArmor) {

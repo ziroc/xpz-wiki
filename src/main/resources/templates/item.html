@@ -24,20 +24,28 @@
 
 		<div class="row">
 			<div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
-				<p
-					th:utext=" ${#strings.replace(#strings.escapeXml(item.description),newLineChar,'&lt;br&gt;')} " />
+			
+				<div th:with="isStoreItem = ${item.armorName != null && #strings.startsWith(item.description,'Description not found')  }">
+					<div th:if="${isStoreItem}">
+						This is a store item for this <a th:href="@{/armor(id=${item.armorName})}"
+								th:text="'armor'"> </a>
+					</div>
+					<div th:if="${!isStoreItem}">
+						<p th:utext=" ${#strings.replace(#strings.escapeXml(item.description),newLineChar,'&lt;br&gt;')} " />
+					</div>
+				</div>
 			</div>
 
+			<!-- Side column -->
 			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
 
-				<div
-					th:insert="${item.power != null || ammoList != null} ? ~{fragments/weapon :: weapon} : ~{}">...</div>
+				<div th:insert="${item.power != null || ammoList != null} ? ~{fragments/weapon :: weapon} : ~{}">...</div>
 
 			</div>
 
 
-			<div class="card">
-				<div class="card-body">
+			<div style="margin-top:8px" class="card">
+				<div class="card-body">					
 					<a href="/">Back to search</a>
 				</div>
 			</div>
