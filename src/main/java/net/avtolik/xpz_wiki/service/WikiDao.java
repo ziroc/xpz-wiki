@@ -1,6 +1,7 @@
 package net.avtolik.xpz_wiki.service;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -10,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Controller;
@@ -49,7 +52,10 @@ public class WikiDao {
 	
 	private String saveFileName = "end.sav";
 	
-	boolean loadSaveGame = false;
+	@Autowired
+	private ApplicationArguments applicationArguments;
+	
+	boolean loadSaveGame = true;
 
 	@EventListener(ApplicationReadyEvent.class)
 	public void loadData() {
@@ -89,7 +95,7 @@ public class WikiDao {
 	}
 
 	private void loadAndProcessSaveGames() {
-		loadSave(saveFileName);
+		loadSave( );
 		List<CurrentResearch> research = saveGame.getBases().get(0).getResearch();
 		
 		System.out.println("saved game research:");
@@ -149,7 +155,15 @@ public class WikiDao {
 		}
 	}
 
-	private void loadSave(String saveFileName) {
+	private void loadSave() {
+		System.out.println("Loading SaveGame");
+		List<String> newSaveGamePath = applicationArguments.getOptionValues("savegame");
+		boolean customPath = false;
+		if (newSaveGamePath.size() >0) {
+			saveFileName = newSaveGamePath.get(0);
+			System.out.println("using custom save game location: " + saveFileName);
+			customPath = true;
+		}
 		Constructor metaConstr = new Constructor(SaveGameMetaData.class);
 		Constructor saveGameConstr = new Constructor(SaveGame.class);
 		PropertyUtils putilsMeta = new PropertyUtils();
@@ -161,10 +175,15 @@ public class WikiDao {
 		Yaml yamlSaveGame = new Yaml(saveGameConstr);
 		
 		boolean endFirstDoc = false;
-		try {
-			InputStream inputStream = this.getClass()
-					.getClassLoader()
-					.getResourceAsStream(saveFileName);
+		InputStream inputStream;
+		try { 
+			if (customPath)
+				inputStream =  new FileInputStream(saveFileName);
+			else 
+				inputStream = this.getClass()
+				.getClassLoader()
+				.getResourceAsStream(saveFileName);
+			
 			BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
 	    
 		    StringBuilder sb = new StringBuilder();
@@ -335,6 +354,14 @@ public class WikiDao {
 
 	public List<Research> getSaveGameResearchList() {
 		return saveGameResearchList;
+	}
+
+	public String getSaveFileName() {
+		return saveFileName;
+	}
+
+	public void setSaveFileName(String saveFileName) {
+		this.saveFileName = saveFileName;
 	}
 
 
