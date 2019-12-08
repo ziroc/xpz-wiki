@@ -43,6 +43,15 @@
 				<p> The site is not yet loaded. Please reload after 20 seconds.out
 				</p>
 			</div>
+			
+			<div th:if="${saveGameResearch != null && itemResult == null && !saveGameResearch.isEmpty()} ">
+				<p>What are you currently researching:</p>
+
+				<div th:each="item: ${saveGameResearch}">
+					<a th:href="@{/research(id=${item.name})}" th:text="${item.realName}"></a>
+				</div>
+				<br>
+			</div>
 
 			<div th:if="${researchResult == null && itemResult == null && items != null } ">
 				<p>Five random research articles:</p>

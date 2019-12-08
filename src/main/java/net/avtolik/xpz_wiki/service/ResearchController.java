@@ -64,6 +64,17 @@ public class ResearchController {
 				unlocks.add(i);
 			}
 		}
+		
+
+		List<Research> leadsToList = new ArrayList<>();
+		if (item.getLeadsTo() != null) {
+			for (String leadsToItem : item.getLeadsTo()) {
+				Research i = new Research();
+				i.setName(leadsToItem);
+				i.setRealName(wd.getResearchItems().get(leadsToItem).getRealName());
+				leadsToList.add(i);
+			}
+		}
 
 		if (wd.getItems().containsKey(id))
 			model.addAttribute("showItemLink", true);
@@ -73,6 +84,7 @@ public class ResearchController {
 		model.addAttribute("item", item);
 		model.addAttribute("deps", deps);
 		model.addAttribute("unlocks", unlocks);
+		model.addAttribute("leadsToList", leadsToList);
 		model.addAttribute("newLineChar", '\n');
 		return "research";
 	}

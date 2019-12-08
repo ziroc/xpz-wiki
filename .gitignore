@@ -3,3 +3,7 @@ target/**
 .project
 .settings/**
 dependency-reduced-pom.xml
+bin/**
+*.rul
+*.sav
+*.yml

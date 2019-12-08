@@ -63,6 +63,15 @@
 					<h5>Item needed:</h5>				
 					This tech can be researched with this <a th:href="@{/item(id=${item.name})}" th:text="'item'"> </a>
 				</div>
+				
+				<div th:if="${not #lists.isEmpty(leadsToList)}">
+					<h5>Leads to:</h5>
+					<ul>
+						<li th:each="leadsToItem : ${leadsToList}"><a
+							th:href="@{/research(id=${leadsToItem.name})}" th:text="${leadsToItem.realName}"></a>
+						</li>
+					</ul>
+				</div>
 			</div>
 			<!-- End Side column -->
 			

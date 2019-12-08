@@ -64,6 +64,8 @@ public class IndexController {
 			int random = r.nextInt(wd.getResearchItems().size());
 			researchList[i] = wd.getResearchItems().get(itemIds[random]);
 		}
+		
+		model.addAttribute("saveGameResearch", wd.getSaveGameResearchList());
 
 		model.addAttribute("items", researchList);
 		return "index";

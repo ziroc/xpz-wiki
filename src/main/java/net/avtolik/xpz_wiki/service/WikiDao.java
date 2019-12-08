@@ -1,6 +1,10 @@
 package net.avtolik.xpz_wiki.service;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +24,9 @@ import net.avtolik.xpz_wiki.model.Dictionary;
 import net.avtolik.xpz_wiki.model.Item;
 import net.avtolik.xpz_wiki.model.PiratezRules;
 import net.avtolik.xpz_wiki.model.Research;
+import net.avtolik.xpz_wiki.model.saveFile.CurrentResearch;
+import net.avtolik.xpz_wiki.model.saveFile.SaveGame;
+import net.avtolik.xpz_wiki.model.saveFile.SaveGameMetaData;
 
 
 @Controller
@@ -35,26 +42,41 @@ public class WikiDao {
 	private HashMap<String, Armor> armors;
 	private HashMap<String, String> armorNames;
 	private HashMap<String, Article> articles;
+	
+	private SaveGameMetaData metaData = null;
+	private SaveGame saveGame = null ;
+	private List<Research> saveGameResearchList;
+	
+	private String saveFileName = "end.sav";
+	
+	boolean loadSaveGame = false;
 
 	@EventListener(ApplicationReadyEvent.class)
 	public void loadData() {
 		System.out.println("Context loaded, trying to read items from file");
+		
+		// loading order is important
 		loadResearchAndArticles();
 		loadDictionary();
+		
 		researchNames = new HashMap<>(researchItems.size());
 		itemNames = new HashMap<>(items.size());
 		armorNames = new HashMap<>(armors.size());
+		saveGameResearchList = new ArrayList<Research>();
+		
+		//process the data, so we can use it		
+		
+		processResearchItems();
+		processItems();
+		processArmors();
+		
+		if(loadSaveGame)
+			loadAndProcessSaveGames();
+		
+		loaded = true;
+	}
 
-		// Load real names for research items
-		for (Map.Entry<String, Research> entry : researchItems.entrySet()) {
-			String name = entry.getValue().getName();
-			Object realName = dict.get(name) ;
-			if(realName != null) {
-				entry.getValue().setRealName(realName.toString()); 
-				researchNames.put(realName.toString(), entry.getKey());
-			}
-		}
-
+	private void processItems() {
 		// Load real names for  items
 		for (Map.Entry<String, Item> entry : items.entrySet()) {
 			String name = entry.getValue().getName();
@@ -64,13 +86,27 @@ public class WikiDao {
 				itemNames.put(realName.toString(), entry.getKey());
 			}
 		}
+	}
 
+	private void loadAndProcessSaveGames() {
+		loadSave(saveFileName);
+		List<CurrentResearch> research = saveGame.getBases().get(0).getResearch();
+		
+		System.out.println("saved game research:");
+		for (CurrentResearch currentResearch : research) {
+			saveGameResearchList.add(researchItems.get(currentResearch.getProject()));
+			System.out.print("" + currentResearch.getProject());
+			System.out.println(" , realname: "+ dict.get(currentResearch.getProject()));
+		}
+	}
+
+	private void processArmors() {
 		// Load real names for  armors
 		for (Map.Entry<String, Armor> entry : armors.entrySet()) {
 			Armor armor = entry.getValue();
 			Object realName = dict.get(armor.getName()) ;
 			if(realName != null) {
-				System.out.println("real name  found for :" + armor.getName() + "  "+ realName);
+//				System.out.println("real name  found for :" + armor.getName() + "  "+ realName);
 				entry.getValue().setRealName(realName.toString()); 
 				armorNames.put(realName.toString(), entry.getKey());
 			}
@@ -78,19 +114,83 @@ public class WikiDao {
 				System.out.println("real name not found for :" + armor.getName());
 			
 			if(armor.getStoreItem() != null) {
-				System.out.println("Armor " + armor.getName() +" has store name " +armor.getStoreItem());
+//				System.out.println("Armor " + armor.getName() +" has store name " +armor.getStoreItem());
 				Item item = items.get(armor.getStoreItem());
 				
 				if(item != null) {
-					System.out.println("found item for it: " + item.getName());
+//					System.out.println("found item for it: " + item.getName());
 					item.setArmorName(armor.getName());
 				}
 				else
-					System.out.println("item not found");
+					System.out.println("item not found for this armor: "+armor.getName());
 			}
 		}
+	}
 
-		loaded = true;
+	private void processResearchItems() {
+		
+		// Load real names for research items,
+		for (Map.Entry<String, Research> entry : researchItems.entrySet()) {
+			String thisName = entry.getValue().getName();
+			Object realName = dict.get(thisName) ;
+			if(realName != null) {
+				entry.getValue().setRealName(realName.toString()); 
+				researchNames.put(realName.toString(), entry.getKey());
+			}
+			// add "Leads-To" items
+			if( entry.getValue().getDependencies() != null)
+				for (String dep: entry.getValue().getDependencies()) {
+					if(researchItems.get(dep ) == null) {
+						System.out.println("research is missing: " + dep);
+						continue;
+					}
+					researchItems.get(dep).getLeadsTo().add(thisName);
+				}
+		}
+	}
+
+	private void loadSave(String saveFileName) {
+		Constructor metaConstr = new Constructor(SaveGameMetaData.class);
+		Constructor saveGameConstr = new Constructor(SaveGame.class);
+		PropertyUtils putilsMeta = new PropertyUtils();
+		putilsMeta.setSkipMissingProperties(true);
+		metaConstr.setPropertyUtils(putilsMeta);
+		saveGameConstr.setPropertyUtils(putilsMeta);
+		
+		Yaml yamlMeta = new Yaml(metaConstr);
+		Yaml yamlSaveGame = new Yaml(saveGameConstr);
+		
+		boolean endFirstDoc = false;
+		try {
+			InputStream inputStream = this.getClass()
+					.getClassLoader()
+					.getResourceAsStream(saveFileName);
+			BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+	    
+		    StringBuilder sb = new StringBuilder();
+		    while(!endFirstDoc) {
+		    	String line = br.readLine();
+		    	if(line.contains("---")) {
+		    		endFirstDoc = true;
+		    		break;
+		    	}
+		    	System.out.println(line);
+		    	sb.append(line+"\n");
+		    }
+		    
+		    if(endFirstDoc) { 
+		    	metaData = yamlMeta.load(sb.toString());		    	
+		    	saveGame = yamlSaveGame.load(br);
+		    }
+		    
+		    br.close();
+		        
+		} catch (IOException ex) {
+		    ex.printStackTrace();
+		}
+
+		System.out.println("Save game name: " + metaData.getName());
+
 	}
 
 	private void loadResearchAndArticles() {
@@ -231,6 +331,10 @@ public class WikiDao {
 
 	public HashMap<String, String> getArmorNames() {
 		return armorNames;
+	}
+
+	public List<Research> getSaveGameResearchList() {
+		return saveGameResearchList;
 	}
 
 

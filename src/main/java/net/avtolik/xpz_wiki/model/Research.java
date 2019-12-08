@@ -1,5 +1,6 @@
 package net.avtolik.xpz_wiki.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +23,7 @@ public class Research {
 	List<String> requiresBaseFunc;
 	List<String> getOneFree;
 	List<String> disables;
+	private List<String> leadsTo = new ArrayList<>();
 	String lookup;
 	String spawnedItem;
 	Map<String,List<String>> getOneFreeProtected;
@@ -124,6 +126,12 @@ public class Research {
 	}
 	public void setNeedItem(boolean needItem) {
 		this.needItem = needItem;
+	}
+	public List<String> getLeadsTo() {
+		return leadsTo;
+	}
+	public void setLeadsTo(List<String> leadsTo) {
+		this.leadsTo = leadsTo;
 	}
 	@Override
 	public String toString() {
