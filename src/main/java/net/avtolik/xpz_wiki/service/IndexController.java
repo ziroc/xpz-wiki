@@ -22,11 +22,17 @@ public class IndexController {
 
 
 	@GetMapping("/")
-	public String greeting(@RequestParam(name="search", required=false) String search, Model model) {
+	public String greeting(@RequestParam(name="search", required=false) String search,
+			@RequestParam(name="reload", required=false) boolean reload, Model model) {
 		
 		if(wd == null || !wd.isLoaded()) {
 			model.addAttribute("loaded", false);
 			return "index";
+		}
+		
+		if(reload) {
+			System.out.println("reloading");
+			wd.loadAndProcessSaveGames();
 		}
 		
 		if(search!= null && !search.equals("")) {
@@ -70,4 +76,6 @@ public class IndexController {
 		model.addAttribute("items", researchList);
 		return "index";
 	}
+	
+	
 }

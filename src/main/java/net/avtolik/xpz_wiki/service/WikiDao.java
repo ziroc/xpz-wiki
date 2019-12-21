@@ -94,9 +94,11 @@ public class WikiDao {
 		}
 	}
 
-	private void loadAndProcessSaveGames() {
-		loadSave( );
+	void loadAndProcessSaveGames() {
+		if(!loadSave( ))
+			return;
 		List<CurrentResearch> research = saveGame.getBases().get(0).getResearch();
+		saveGameResearchList.clear();
 		
 		System.out.println("saved game research:");
 		for (CurrentResearch currentResearch : research) {
@@ -155,9 +157,11 @@ public class WikiDao {
 		}
 	}
 
-	private void loadSave() {
+	private boolean loadSave() {
 		System.out.println("Loading SaveGame");
 		List<String> newSaveGamePath = applicationArguments.getOptionValues("savegame");
+		if(newSaveGamePath == null) 
+			return false;
 		boolean customPath = false;
 		if (newSaveGamePath.size() >0) {
 			saveFileName = newSaveGamePath.get(0);
@@ -206,9 +210,10 @@ public class WikiDao {
 		        
 		} catch (IOException ex) {
 		    ex.printStackTrace();
+		    return false;
 		}
-
 		System.out.println("Save game name: " + metaData.getName());
+		return true;
 
 	}
 

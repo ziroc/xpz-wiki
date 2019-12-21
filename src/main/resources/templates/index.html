@@ -45,7 +45,7 @@
 			</div>
 			
 			<div th:if="${saveGameResearch != null && itemResult == null && !saveGameResearch.isEmpty()} ">
-				<p>What are you currently researching:</p>
+				<p>What are you currently researching: (<a href="/?reload=true" >reload</a>)</p>
 
 				<div th:each="item: ${saveGameResearch}">
 					<a th:href="@{/research(id=${item.name})}" th:text="${item.realName}"></a>
