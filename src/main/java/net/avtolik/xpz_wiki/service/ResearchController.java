@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,7 +26,7 @@ public class ResearchController {
 	WikiDao wd;
 
 	@GetMapping("/research")
-	public String getResearch(@RequestParam(name="id", required=false, defaultValue="World") String id, Model model) {
+	public String getResearch(@RequestParam(name="id", required=false, defaultValue="World") String id, Model model, HttpSession session) {
 
 		Research item = wd.getResearchItems().get(id);
 
@@ -32,6 +34,8 @@ public class ResearchController {
 			model.addAttribute("error", "Item not found!");
 			return "item";
 		}
+		
+		System.out.println("sess: "+ session.getAttribute("test1"));
 
 		System.out.println("Item found + "+item);
 		String desc = getDescription(item);

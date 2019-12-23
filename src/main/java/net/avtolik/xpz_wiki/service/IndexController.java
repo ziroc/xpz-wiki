@@ -1,8 +1,12 @@
 package net.avtolik.xpz_wiki.service;
 
+import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,7 +27,7 @@ public class IndexController {
 
 	@GetMapping("/")
 	public String greeting(@RequestParam(name="search", required=false) String search,
-			@RequestParam(name="reload", required=false) boolean reload, Model model) {
+			@RequestParam(name="reload", required=false) boolean reload, Model model, HttpSession session) {
 		
 		if(wd == null || !wd.isLoaded()) {
 			model.addAttribute("loaded", false);
@@ -34,6 +38,9 @@ public class IndexController {
 			System.out.println("reloading");
 			wd.loadAndProcessSaveGames();
 		}
+		
+		session.setAttribute("test1", new Date());
+//		session.seta
 		
 		if(search!= null && !search.equals("")) {
 			System.out.println("searching for "+search);

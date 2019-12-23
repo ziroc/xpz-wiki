@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="icon" href="../../favicon.ico" />
+
+<title th:text=" ${ 'XPZ WIKI - Save Game' }">XPZ WIKI</title>
+
+<!-- Bootstrap core CSS -->
+<link href="../static/css/bootstrap.css" rel="stylesheet"
+	th:href="@{/css/bootstrap.css}" />
+</head>
+<body>
+	<div class="container">
+		<h2 class="page-header" th:text=" ${saveGame?.fileName} ">Save Game not loaded</h2>
+
+
+
+		<div class="row">
+			<div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
+			
+			    <div th:if="${!saveGameLoaded && message!=null }">
+					<p  th:text=" ${message} ">Message not found</h2>
+				</div>
+				<div th:if="${saveGameLoaded}">
+					Save game loaded
+				</div>
+				
+				<div th:if="${!saveGameLoaded}">
+					Save Game not found. Do you want to upload one:
+					<div>
+				<form method="POST" enctype="multipart/form-data" action="/uploadSave">
+				<table>
+					<tr><td>File to upload:</td><td><input type="file" name="file" /></td></tr>
+					<tr><td></td><td><input type="submit" value="Upload" /></td></tr>
+				</table>
+				</form>
+					</div>
+
+					<div>
+						<ul>
+							<li th:each="file : ${files}">
+								<a th:href="${file}" th:text="${file}" />
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<!-- Side column -->
+			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+
+				
+
+			</div>
+
+		</div>
+		<div style="margin-top: 8px" class="card">
+			<div class="card-body">
+				<a href="/">Back to search</a>
+			</div>
+		</div>
+
+
+
+	</div>
+	<!-- /container -->
+
+	<div th:insert="~{fragments/footer :: footer} ">...</div>
+
+	<!-- Bootstrap core JavaScript
+================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="../static/js/bootstrap.js" th:href="@{/js/bootstrap.js}"></script>
+	<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+</body>
+</html>

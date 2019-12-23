@@ -61,6 +61,9 @@ public class WikiDao {
 	public void loadData() {
 		System.out.println("Context loaded, trying to read items from file");
 		
+		System.out.println("Working Directory = " +
+	              System.getProperty("user.dir"));
+		
 		// loading order is important
 		loadResearchAndArticles();
 		loadDictionary();
@@ -160,8 +163,10 @@ public class WikiDao {
 	private boolean loadSave() {
 		System.out.println("Loading SaveGame");
 		List<String> newSaveGamePath = applicationArguments.getOptionValues("savegame");
-		if(newSaveGamePath == null) 
+		if(newSaveGamePath == null) {
+			System.out.println("No savegame location param found");
 			return false;
+		}
 		boolean customPath = false;
 		if (newSaveGamePath.size() >0) {
 			saveFileName = newSaveGamePath.get(0);
@@ -219,6 +224,7 @@ public class WikiDao {
 
 	private void loadResearchAndArticles() {
 
+		InputStream inputStream;
 		try {
 			Constructor c = new Constructor(PiratezRules.class);
 			c.setPropertyUtils(new PropertyUtils() {
@@ -232,9 +238,13 @@ public class WikiDao {
 			c.getPropertyUtils().setSkipMissingProperties(true);
 
 			Yaml yaml = new Yaml(c);
-			InputStream inputStream = this.getClass()
-					.getClassLoader()
-					.getResourceAsStream("Piratez.rul");
+
+			inputStream = this.getClass()
+				.getClassLoader()
+				.getResourceAsStream("Piratez.rul");
+			
+			if(inputStream == null)
+				inputStream =  new FileInputStream("Piratez.rul");
 
 			PiratezRules rules = yaml.load(inputStream);
 
@@ -256,17 +266,17 @@ public class WikiDao {
 			filteredItems.stream().forEach(a -> items.put(a.getName(), a));
 			armorList.stream().forEach(a -> armors.put(a.getName(), a));
 
-
 			System.out.println("Reseach items and articles loaded");
-			//		} catch (IOException e) {
-			//			System.out.println("Cannot load the items. Probably cannot find the file.");		
+	
 		} catch (Exception e) {
 			System.out.println("Cannot load the items: "+e.getMessage());
+			System.exit(-1);
 		}
 
 	}
 
 	private void loadDictionary() {
+		InputStream inputStream;
 		try {
 			Constructor c = new Constructor(Dictionary.class);
 			c.setPropertyUtils(new PropertyUtils() {
@@ -280,10 +290,13 @@ public class WikiDao {
 			});
 			Yaml yaml = new Yaml(c);
 
-			InputStream inputStream = this.getClass()
+			inputStream = this.getClass()
 					.getClassLoader()
 					.getResourceAsStream("en-US.yml");
-
+				
+				if(inputStream == null)
+					inputStream =  new FileInputStream("en-US.yml");
+			
 			Dictionary d = yaml.load(inputStream);
 
 			System.out.println("Dic loaded: " + d.getEnUS().get("STR_TECHNOCRACY").equals("THE TECHNOCRACY"));
