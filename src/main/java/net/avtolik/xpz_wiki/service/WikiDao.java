@@ -1,11 +1,11 @@
 package net.avtolik.xpz_wiki.service;
 
-import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +27,7 @@ import net.avtolik.xpz_wiki.model.Dictionary;
 import net.avtolik.xpz_wiki.model.Item;
 import net.avtolik.xpz_wiki.model.PiratezRules;
 import net.avtolik.xpz_wiki.model.Research;
+import net.avtolik.xpz_wiki.model.saveFile.Bases;
 import net.avtolik.xpz_wiki.model.saveFile.CurrentResearch;
 import net.avtolik.xpz_wiki.model.saveFile.SaveGame;
 import net.avtolik.xpz_wiki.model.saveFile.SaveGameMetaData;
@@ -47,15 +48,12 @@ public class WikiDao {
 	private HashMap<String, Article> articles;
 	
 	private SaveGameMetaData metaData = null;
-	private SaveGame saveGame = null ;
 	private List<Research> saveGameResearchList;
 	
-	private String saveFileName = "end.sav";
 	
 	@Autowired
 	private ApplicationArguments applicationArguments;
 	
-	boolean loadSaveGame = true;
 
 	@EventListener(ApplicationReadyEvent.class)
 	public void loadData() {
@@ -78,10 +76,7 @@ public class WikiDao {
 		processResearchItems();
 		processItems();
 		processArmors();
-		
-		if(loadSaveGame)
-			loadAndProcessSaveGames();
-		
+			
 		loaded = true;
 	}
 
@@ -97,18 +92,28 @@ public class WikiDao {
 		}
 	}
 
-	void loadAndProcessSaveGames() {
-		if(!loadSave( ))
-			return;
-		List<CurrentResearch> research = saveGame.getBases().get(0).getResearch();
-		saveGameResearchList.clear();
+	public SaveGame loadAndProcessSaveGames(InputStream inputStream) {
+		SaveGame result;
+		result = loadSave(inputStream);
 		
-		System.out.println("saved game research:");
-		for (CurrentResearch currentResearch : research) {
-			saveGameResearchList.add(researchItems.get(currentResearch.getProject()));
-			System.out.print("" + currentResearch.getProject());
-			System.out.println(" , realname: "+ dict.get(currentResearch.getProject()));
+		if(result == null)
+			return null;
+		
+		List<Bases> bases = result.getBases();
+		for (Bases base : bases) {
+			System.out.println("base: "+base.getName());
+			List<CurrentResearch> research = base.getResearch();
+			
+			if(research == null) // no research in this base
+				continue;
+			for (CurrentResearch res : research) {
+				result.getCurrentResearch().add(researchItems.get(res.getProject()));
+				System.out.print("" + res.getProject());
+				System.out.println(" , realname: "+ dict.get(res.getProject()));
+			}
 		}
+		
+		return result;
 	}
 
 	private void processArmors() {
@@ -160,18 +165,23 @@ public class WikiDao {
 		}
 	}
 
-	private boolean loadSave() {
+	public SaveGame loadSave(InputStream inputStream) {
+		SaveGame result = null;
+		String fileName = null;
+		boolean customPath = false;
+		
 		System.out.println("Loading SaveGame");
 		List<String> newSaveGamePath = applicationArguments.getOptionValues("savegame");
-		if(newSaveGamePath == null) {
-			System.out.println("No savegame location param found");
-			return false;
-		}
-		boolean customPath = false;
-		if (newSaveGamePath.size() >0) {
-			saveFileName = newSaveGamePath.get(0);
-			System.out.println("using custom save game location: " + saveFileName);
+
+		if (newSaveGamePath != null && newSaveGamePath.size() >0) {
+			fileName = newSaveGamePath.get(0);
+			System.out.println("using custom save game location: " + inputStream);
 			customPath = true;
+		}
+		
+		if (inputStream ==null && !customPath ) {
+			System.out.println("cannot load save game");
+			return null;
 		}
 		Constructor metaConstr = new Constructor(SaveGameMetaData.class);
 		Constructor saveGameConstr = new Constructor(SaveGame.class);
@@ -184,17 +194,13 @@ public class WikiDao {
 		Yaml yamlSaveGame = new Yaml(saveGameConstr);
 		
 		boolean endFirstDoc = false;
-		InputStream inputStream;
+
 		try { 
 			if (customPath)
-				inputStream =  new FileInputStream(saveFileName);
-			else 
-				inputStream = this.getClass()
-				.getClassLoader()
-				.getResourceAsStream(saveFileName);
+				inputStream =  new FileInputStream(fileName);
 			
-			BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
-	    
+			MyBufferedReader br = new MyBufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+			
 		    StringBuilder sb = new StringBuilder();
 		    while(!endFirstDoc) {
 		    	String line = br.readLine();
@@ -202,25 +208,28 @@ public class WikiDao {
 		    		endFirstDoc = true;
 		    		break;
 		    	}
-		    	System.out.println(line);
+//		    	System.out.println(line);
 		    	sb.append(line+"\n");
 		    }
 		    
 		    if(endFirstDoc) { 
-		    	metaData = yamlMeta.load(sb.toString());		    	
-		    	saveGame = yamlSaveGame.load(br);
+		    	metaData = yamlMeta.load  (sb.toString());
+		    	System.out.println("loading meta: "+metaData.getName());
+		    	result = yamlSaveGame.load(br);
 		    }
 		    
-		    br.close();
+		    
 		        
 		} catch (IOException ex) {
 		    ex.printStackTrace();
-		    return false;
+		    return null;
 		}
 		System.out.println("Save game name: " + metaData.getName());
-		return true;
+		return result;
 
 	}
+	
+	List<String> toFixCase = Arrays.asList(new String[]{"ToArmorPre", "ArmorEffectiveness", "ToArmor", "ToMorale", "ToWound"});
 
 	private void loadResearchAndArticles() {
 
@@ -232,6 +241,8 @@ public class WikiDao {
 				public Property getProperty(Class<? extends Object> type, String name)  {
 					if ( name.equals("type")) 
 						name = "name";
+					else if (toFixCase.contains(name)) 
+						name = name.substring(0, 1).toLowerCase() + name.substring(1);
 					return super.getProperty(type, name);
 				}
 			});
@@ -373,15 +384,4 @@ public class WikiDao {
 	public List<Research> getSaveGameResearchList() {
 		return saveGameResearchList;
 	}
-
-	public String getSaveFileName() {
-		return saveFileName;
-	}
-
-	public void setSaveFileName(String saveFileName) {
-		this.saveFileName = saveFileName;
-	}
-
-
-
 }

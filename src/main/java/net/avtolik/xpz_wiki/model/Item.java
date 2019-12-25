@@ -19,6 +19,7 @@ public class Item {
 	Integer accuracyMelee;
 	Integer damageType;
 	Integer power;
+	Integer clipSize;
 	
 	Integer tuAuto;
 	Integer tuSnap;
@@ -31,6 +32,8 @@ public class Item {
 	Integer autoRange;
 	Integer snapRange;
 	Integer aimRange;
+	
+	DamageAlter damageAlter;
 	
 	String armorName;
 	
@@ -157,6 +160,18 @@ public class Item {
 	}
 	public void setArmorName(String armorName) {
 		this.armorName = armorName;
+	}
+	public DamageAlter getDamageAlter() {
+		return damageAlter;
+	}
+	public void setDamageAlter(DamageAlter damageAlter) {
+		this.damageAlter = damageAlter;
+	}
+	public Integer getClipSize() {
+		return clipSize;
+	}
+	public void setClipSize(Integer clipSize) {
+		this.clipSize = clipSize;
 	}
 	
 	

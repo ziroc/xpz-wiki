@@ -8,7 +8,7 @@
 		<div th:if="${item.power != null }">
 			Damage: <span th:text=" ${item.power} "></span>
 		</div>
-
+		<br />
 		<div th:if="${item.accuracyMelee != null }">
 			Melee Accuracy: <span th:text=" ${item.accuracyMelee} + '%'"></span>
 		</div>
@@ -36,11 +36,37 @@
 
 		<!-- Other -->
 		<div th:if="${item.damageBonus != null}">
-			<br /> Damage bonus:
+			Damage bonus:
 			<div th:each="it: ${item.damageBonus}">
 				<span style="padding-left: 15px"
 					th:text=" ${ it.value  + '*' + it.key} "></span>
 			</div>
+		</div>
+		
+		<!-- Damage Alter -->
+		<div th:if="${item.damageAlter != null}">
+			Damage info:
+			<ul>
+				<li th:if="${item.damageAlter?.armorEffectiveness != null }">Armor Effectiveness: <span
+					th:text=" ${#numbers.formatDecimal( item.damageAlter?.armorEffectiveness*100, 1, 'POINT', 2, 'POINT')} + '%' "></span>
+				</li>
+				
+				<li th:if="${item.damageAlter.toWound != null }">Wound Count Mult: <span
+					th:text=" ${#numbers.formatDecimal( item.damageAlter.toWound*100, 1, 'POINT', 2, 'POINT')} +'%' "></span>
+				</li>
+				
+				<li th:if="${item.damageAlter.toArmorPre != null }">Armor dmg: <span
+					th:text=" ${#numbers.formatDecimal( item.damageAlter.toArmorPre*100, 1, 'POINT', 2, 'POINT')} +'%' "></span>
+				</li>
+				
+				<li th:if="${item.damageAlter.toStun != null }">Stun dmg: <span
+					th:text=" ${#numbers.formatDecimal( item.damageAlter.toStun*100, 1, 'POINT', 2, 'POINT')} +'%' "></span>
+				</li>
+				
+				<li th:if="${item.damageAlter.toMorale != null }">Moral dmg: <span
+					th:text=" ${#numbers.formatDecimal( item.damageAlter.toMorale*100, 1, 'POINT', 2, 'POINT')} + '%' "></span>
+				</li>
+			</ul>
 		</div>
 
 		<br>
@@ -48,12 +74,16 @@
 		<div th:if="${ammoList != null}">
 			Compatible ammo (dmg):
 			<ul>
-				<li th:each="it: ${ammoList}"><a
-					th:href="@{/item(id=${it.name})}" th:text="${it.realName}"></a> <span
-					th:text="'('+ ${it?.power} +')' "></span></li>
+				<li th:each="ammo: ${ammoList}"><a
+					th:href="@{/item(id=${ammo.name})}" th:text="${ammo.realName}"></a> <span
+					th:text="'('+ ${ammo?.power} +')' "></span></li>
 			</ul>
 		</div>
-
+		
+		<div th:if="${item.clipSize != null && item.clipSize > 0}">
+			Clip size: <span th:text=" ${item.clipSize} "></span>
+		</div>
+		
 		<div th:if="${item.weight != null }">
 			Weight: <span th:text=" ${item.weight} "></span>
 		</div>
