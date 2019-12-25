@@ -1,7 +1,6 @@
 package net.avtolik.xpz_wiki.service;
 
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -34,10 +33,10 @@ public class IndexController {
 			return "index";
 		}
 		
-		if(reload) {
-			System.out.println("reloading");
-			wd.loadAndProcessSaveGames();
-		}
+//		if(reload) {
+//			System.out.println("reloading");
+//			wd.loadAndProcessSaveGames();
+//		}
 		
 		session.setAttribute("test1", new Date());
 //		session.seta
