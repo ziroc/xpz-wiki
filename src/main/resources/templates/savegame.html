@@ -52,6 +52,9 @@
 						<div class="form-group ">
 							<p id="msg"></p>
 						</div>
+						<div class="form-group ">
+							<p id="test"></p>
+						</div>
 					</form>
 		</div>
 				
@@ -103,6 +106,8 @@
 	<script src="/js/bootstrap.js" th:href="@{/js/bootstrap.js}"></script>
 	<script src="../static/jsesprima.js"></script>
 	<script src="/js/js-yaml.min.js"></script>
+	<script type="text/javascript" src="/js/renderjson.js"></script>
+	
 	<script>
 	function money (inp) {
 		return inp.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") ;
@@ -125,29 +130,38 @@
 			var research = JSON.stringify(result[1]['bases'], replacer)
 			localStorage.setItem('bases', bases );
 			console.log(result[1]);
-
 		} catch (e) {
 			console.log(e);
 		}
-		msg.textContent="Done. Reloading. Bases: ";
-		var bases2 = JSON.parse(localStorage.getItem('bases')); 
-		
-		bases2.forEach ( function(item, index) {
-				 msg.textContent =  msg.textContent +' '+ (item.name);	
-		});
-		
-		//displayContents(contents);
+		msg.textContent="Done. Reloading. Bases: ";		
+		displayContents();
 	  }
+	  
 	  reader.readAsText(file);
 	}
 
-	function displayContents(contents) {
-	  var element = document.getElementById('file-content');
-	  element.textContent = contents;
+	function displayContents() {	
+		bases2 = JSON.parse(localStorage.getItem('bases')); 
+		console.log('check if bases is null' + !bases2);
+		
+		if(!bases2 )
+			return;
+			
+		bases2.forEach ( function(item, index) {
+				 msg.textContent =  msg.textContent +' '+ (item.name);	
+		});
+		const parent = document.getElementById("test");
+		while (parent.firstChild) {
+			parent.firstChild.remove();
+		}
+		renderjson.set_show_to_level(3);
+		document.getElementById("test").appendChild(renderjson(bases2[0]['research']));
 	}
 
 	document.getElementById('file-input')
 	  .addEventListener('change', readSingleFile, false);
+	  
+	displayContents();
 	</script>
 	<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 </body>
