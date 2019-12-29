@@ -21,6 +21,8 @@ public class Armor {
 	
 	String storeItem;
 	
+	private List<String> units;
+	
 	public String getName() {
 		return name;
 	}
@@ -98,6 +100,12 @@ public class Armor {
 	}
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	public List<String> getUnits() {
+		return units;
+	}
+	public void setUnits(List<String> units) {
+		this.units = units;
 	}
 	
 }

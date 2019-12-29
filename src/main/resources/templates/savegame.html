@@ -49,15 +49,21 @@
 							<button class="btn btn-primary" type="submit">Upload</button>							
 						</div>
 				-->
+
+					</form>
+
+		</div>
+		<p><a href="armortable">Check out the armors you know about<a/></p>
 						<div class="form-group ">
 							<p id="msg"></p>
 						</div>
 						<div class="form-group ">
 							<p id="test"></p>
 						</div>
-					</form>
-		</div>
-				
+						
+						<div class="form-group ">
+							<p id="result"></p>
+						</div>
 				<div th:if="${saveGameLoaded}">
 					<div th:if="${saveGameResearch != null && !saveGameResearch.isEmpty()} ">
 						<p>Currently researching: </p>
@@ -107,7 +113,7 @@
 	<script src="../static/jsesprima.js"></script>
 	<script src="/js/js-yaml.min.js"></script>
 	<script type="text/javascript" src="/js/renderjson.js"></script>
-	
+
 	<script>
 	function money (inp) {
 		return inp.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") ;
@@ -127,9 +133,30 @@
 			const result = jsyaml.safeLoadAll(contents);
 			var replacer = function(k, v) { if (v === undefined) { return null; }  return v; };
 			var bases = JSON.stringify(result[1]['bases'], replacer)
-			var research = JSON.stringify(result[1]['bases'], replacer)
+			var ufopediaRuleStatus = JSON.stringify(result[1]['ufopediaRuleStatus'], replacer)
+			var research = JSON.stringify(result[1]['discovered'], replacer)
 			localStorage.setItem('bases', bases );
+			localStorage.setItem('discovered', research );
+			localStorage.setItem('ufopediaStatus', ufopediaRuleStatus );
 			console.log(result[1]);
+			
+		//	$.post( "/uploadUfopediaStatus", 		
+		//	 function( data ) {			
+		//	},
+		//	"json" );
+			
+			$.ajax({
+			  url: "/uploadUfopediaStatus",
+			  type: "POST",
+			  data: result[1]['ufopediaRuleStatus'], 	
+			  contentType: "application/json; charset=utf-8",
+			  dataType: "json",
+			  success: function(data){
+				 console.log("response: "+data);
+				 document.getElementById("result").innerHTML = data ;
+			  }
+			});
+
 		} catch (e) {
 			console.log(e);
 		}
@@ -142,6 +169,7 @@
 
 	function displayContents() {	
 		bases2 = JSON.parse(localStorage.getItem('bases')); 
+		wikiStatus = JSON.parse(localStorage.getItem('ufopediaStatus'));
 		console.log('check if bases is null' + !bases2);
 		
 		if(!bases2 )
@@ -155,11 +183,12 @@
 			parent.firstChild.remove();
 		}
 		renderjson.set_show_to_level(3);
-		document.getElementById("test").appendChild(renderjson(bases2[0]['research']));
+		document.getElementById("test").appendChild(renderjson(bases2[0]['research']));		
 	}
 
-	document.getElementById('file-input')
-	  .addEventListener('change', readSingleFile, false);
+	var fileinp = document.getElementById('file-input');
+	if(!!fileinp)
+	  fileinp.addEventListener('change', readSingleFile, false);
 	  
 	displayContents();
 	</script>

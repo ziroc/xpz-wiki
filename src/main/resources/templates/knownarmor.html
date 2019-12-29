@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="icon" href="../../favicon.ico" />
+
+<title th:text=" ${ 'XPZ WIKI - Save Game' }">XPZ WIKI</title>
+
+<!-- Bootstrap core CSS -->
+<link href="../static/css/bootstrap.css" rel="stylesheet"
+	th:href="@{/css/bootstrap.css}" />
+<link href="../static/css/custom.css" rel="stylesheet"
+	th:href="@{/css/custom.css}" />
+<link href="../static/css/custom.css" rel="stylesheet"
+	th:href="@{/css/custom.css}" />
+<link href="./static/css/datatables.min.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<div class="container-fluid">
+		<h2 class="page-header">Known Armor Table </h2>
+
+
+		<div class="row">
+			
+			
+				<div th:if="${armors != null}">
+					<span th:text="'Found ' + ${armors.size()} + ' armors that you know of'"></span>
+					<br/>
+					<input type="checkbox" name="hidePea" checked> Hide PEA armors
+					<br/>
+					<input type="checkbox" name="hideSea" checked> Hide SEA armors
+					<br/>
+					<input type="checkbox" name="hideCars" checked> Hide Cars
+					
+					<table id="armortable" class="table table-sm">
+						 <thead>
+							<tr>
+								<th> Name</th>
+								<th> Front Side Back Under </th>
+								<th> CHARM </th>
+								<th> PIERCING </th>
+								<th> BURN </th>
+								<th> CONCUSSIVE </th>
+								<th> LASER </th>
+								<th> PLASMA </th>
+								<th> DAZE </th>
+								<th> CUTTING </th>
+								<th> CHEM </th>
+								<th> CHOCKING </th>
+								<th> ANTI-E511 </th>
+								<th> BIO </th>
+								<th> ELECTRIC </th>
+								<th> EMP </th>
+								<th> WARP </th>
+								<th> MIND </th>
+								<th> HEAT </th>
+								<th> COLD </th>								
+							</tr>
+						</thead>
+						<tr th:each="armor, itemStat : ${armors}">
+
+							<td>
+								<span th:text="${armor.realName}" th:remove="tag"> </span>
+							</td>
+							<td>
+								<span th:text="${armor.frontArmor} + ' ' + ${armor.sideArmor} + ' ' +${armor.rearArmor} + ' ' +${armor.underArmor}" th:remove="tag"> </span>
+							</td>
+							<td th:each="modd,iter : ${armorModifiers}">
+								<span th:text="${armor.damageModifier[iter.index] != 1 } ? ${#numbers.formatDecimal(armor.damageModifier[iter.index]*100, 0, 0)}+'%' : '-'" th:remove="tag"></span>
+							</td>
+						</tr>
+					</table>					
+				</div>
+			
+			
+		</div>	
+		
+	</div>
+	
+	<div th:insert="~{fragments/footer :: footer} ">...</div>
+	<script	src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script type="text/javascript" src="../js/datatables.min.js"></script>
+	
+	<script>
+	
+		$(document).ready( function () {
+		
+		 $.fn.dataTable.ext.search.push(
+			function (settings, searchData, index, rowData, counter) {
+			
+			if (searchData[0].startsWith('CAR*')) {
+				console.log(searchData[0])
+			}
+				
+			  var hideSea = $('input:checkbox[name="hideSea"]').is(':checked');
+			  var hidePea = $('input:checkbox[name="hidePea"]').is(':checked');
+			  var hideCars = $('input:checkbox[name="hideCars"]').is(':checked');
+			  
+			  // If checked and Position column is blank don't display the row
+			  if (hidePea && searchData[0].includes('PEA')) {
+				return false;
+			  }
+
+			  if (hideSea && searchData[0].includes('SEA')) {
+				return false;
+			  }
+			  
+
+			  if (hideCars && searchData[0].startsWith('CAR*')) {
+				return false;
+			  }  
+			  
+			  // Otherwise display the row
+			  return true;
+			  
+			});
+			
+			var table = $('#armortable').DataTable({
+				columnDefs: [
+					{ targets: 0, "type": "string"},
+					{ targets: 1, "type": "customString"},
+					{ targets: '_all', "type": "customperc" }
+				],
+				paging: false,
+				"scrollX": true
+			});
+			
+			  $('input:checkbox').on('change', function () {    
+				// Run the search plugin
+				table.draw();				
+			  });
+		} );
+		
+		_anyNumberSort = function(a, b, high) {			
+			//var reg = /[+-]?((\d+(\.\d*)?)|\.\d+)([eE][+-]?[0-9]+)?/;       
+			//a = a.replace(',','.').match(reg);
+			if(a.endsWith('%'))
+				a = a.substring(0, a.length - 1);
+			if(b.endsWith('%'))
+				b = b.substring(0, b.length - 1);	
+			if(a === '-')
+				a = 100;
+			if(b === '-')
+				b = 100;
+			a = a !== null ? parseFloat(a) : high;
+			//b = b.replace(',','.').match(reg);
+			b = b !== null ? parseFloat(b) : high;
+			return ((a < b) ? -1 : ((a > b) ? 1 : 0));   
+		}
+		
+		simpleSort = function(a, b) {			
+			var reg = /\ .*/;       
+			a = a.replace(reg,'');
+			b = b.replace(reg,'');
+			
+			a = a !== null ? parseFloat(a) : 99999;
+			b = b !== null ? parseFloat(b) : 99999;
+			
+			return ((a < b) ? -1 : ((a > b) ? 1 : 0));   
+		}
+		
+		 
+		jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+			"customperc-asc": function (a, b) {
+				return _anyNumberSort(a, b, Number.POSITIVE_INFINITY);
+			},
+			"customperc-desc": function (a, b) {
+				return _anyNumberSort(a, b, Number.NEGATIVE_INFINITY) * -1;
+			},
+			"customString-asc": function (a, b) {
+				return simpleSort(a, b);
+			},
+			"customString-desc": function (a, b) {
+				return simpleSort(a, b) * -1;
+			}
+		});
+		
+
+	</script>
+</body>
+</html>

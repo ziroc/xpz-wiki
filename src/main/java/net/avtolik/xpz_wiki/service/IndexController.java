@@ -1,6 +1,5 @@
 package net.avtolik.xpz_wiki.service;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -25,7 +24,7 @@ public class IndexController {
 
 
 	@GetMapping("/")
-	public String greeting(@RequestParam(name="search", required=false) String search,
+	public String showIndex(@RequestParam(name="search", required=false) String search,
 			@RequestParam(name="reload", required=false) boolean reload, Model model, HttpSession session) {
 		
 		if(wd == null || !wd.isLoaded()) {
@@ -37,9 +36,6 @@ public class IndexController {
 //			System.out.println("reloading");
 //			wd.loadAndProcessSaveGames();
 //		}
-		
-		session.setAttribute("test1", new Date());
-//		session.seta
 		
 		if(search!= null && !search.equals("")) {
 			System.out.println("searching for "+search);
@@ -77,7 +73,7 @@ public class IndexController {
 			researchList[i] = wd.getResearchItems().get(itemIds[random]);
 		}
 		
-		model.addAttribute("saveGameResearch", wd.getSaveGameResearchList());
+//		model.addAttribute("saveGameResearch", wd.getSaveGameResearchList());
 
 		model.addAttribute("items", researchList);
 		return "index";

@@ -7,3 +7,4 @@ bin/**
 *.rul
 *.sav
 *.yml
+/target/

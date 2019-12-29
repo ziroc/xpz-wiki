@@ -5,3 +5,11 @@
 .currency {
 	word-spacing: -1px;
 }
+
+#armortable td {
+	white-space: nowrap;
+}
+
+#armortable th {
+	white-space: nowrap;
+}
