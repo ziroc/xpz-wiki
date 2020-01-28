@@ -6,28 +6,28 @@ import java.util.List;
 import net.avtolik.xpz_wiki.model.Research;
 
 public class SaveGame {
-	List<String> discovered;	
-	private List<Bases> bases;
+//	List<String> discovered;	
+	private List<Base> bases;
 	
-	private List<Integer> funds;
+//	private List<Integer> funds;
 	
 	
 	private transient List<Research> currentResearch = new ArrayList<>();
 	
 	
-	public List<String> getDiscovered() {
-		return discovered;
-	}
+//	public List<String> getDiscovered() {
+//		return discovered;
+//	}
+//
+//	public void setDiscovered(List<String> discovered) {
+//		this.discovered = discovered;
+//	}
 
-	public void setDiscovered(List<String> discovered) {
-		this.discovered = discovered;
-	}
-
-	public List<Bases> getBases() {
+	public List<Base> getBases() {
 		return bases;
 	}
 
-	public void setBases(List<Bases> bases) {
+	public void setBases(List<Base> bases) {
 		this.bases = bases;
 	}
 
@@ -39,12 +39,12 @@ public class SaveGame {
 		this.currentResearch = research;
 	}
 
-	public List<Integer> getFunds() {
-		return funds;
-	}
-
-	public void setFunds(List<Integer> funds) {
-		this.funds = funds;
-	}
+//	public List<Integer> getFunds() {
+//		return funds;
+//	}
+//
+//	public void setFunds(List<Integer> funds) {
+//		this.funds = funds;
+//	}
 
 }

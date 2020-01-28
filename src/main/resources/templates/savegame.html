@@ -140,10 +140,17 @@
 			localStorage.setItem('ufopediaStatus', ufopediaRuleStatus );
 			console.log(result[1]);
 			
-		//	$.post( "/uploadUfopediaStatus", 		
-		//	 function( data ) {			
-		//	},
-		//	"json" );
+			$.ajax({
+			  url: "/uploadBases",
+			  type: "POST",
+			  data: bases,
+			  contentType: "application/json; charset=utf-8",
+			  dataType: "json",
+			  success: function(data){
+				 console.log("response for bases: "+data);
+				 document.getElementById("result").innerHTML = data ;
+			  }
+			});
 			
 			$.ajax({
 			  url: "/uploadUfopediaStatus",
@@ -152,7 +159,7 @@
 			  contentType: "application/json; charset=utf-8",
 			  dataType: "json",
 			  success: function(data){
-				 console.log("response: "+data);
+				 console.log("response for ufo status: "+data);
 				 document.getElementById("result").innerHTML = data ;
 			  }
 			});

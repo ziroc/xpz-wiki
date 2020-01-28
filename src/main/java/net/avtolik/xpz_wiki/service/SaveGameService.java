@@ -1,7 +1,9 @@
 package net.avtolik.xpz_wiki.service;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -13,9 +15,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
 import net.avtolik.xpz_wiki.model.Armor;
+import net.avtolik.xpz_wiki.model.saveFile.Base;
 import net.avtolik.xpz_wiki.model.saveFile.SaveGame;
 import net.avtolik.xpz_wiki.model.saveFile.SaveGameJson;
+import net.avtolik.xpz_wiki.model.saveFile.Soldier;
 import net.avtolik.xpz_wiki.model.saveFile.StorageException;
 import net.avtolik.xpz_wiki.model.saveFile.UfopediaStatus;
 
@@ -28,7 +37,12 @@ public class SaveGameService {
 	
 	private static String [] girls = {"STR_SOLDIER","STR_SOLDIER_S", "STR_SOLDIER_M", 
 			"STR_SOLDIER_V 	", "STR_SOLDIER_X", "STR_SOLDIER_R", "STR_SOLDIER_W"};
-//	
+	
+	private static List<String> girlsList = Arrays.asList(girls);
+	private static final String LOKNAR = "STR_SOLDIER_LOKNAR";
+	private static final Object SLAVE = "STR_SOLDIER_SLAVE";
+
+	
 //	private final Path rootLocation = Paths.get("upload-dir");
 
 	@Async
@@ -111,6 +125,45 @@ public class SaveGameService {
 		session.setAttribute("saveGameUpLoaded", true);
 	}
 
+    public static void main(String[] args) throws JsonGenerationException, JsonMappingException, IOException {
+    	
+    	 ObjectMapper objectMapper = new ObjectMapper();
+    	 Base b = new Base();
+    	 b.setName("Name1");
+    	 
+    	 ArrayList<Base> ar =  new ArrayList<>();
+    	 ar.add(b);
+    	 SaveGame s = new SaveGame();
+    	 s.setBases(ar);
+    	 
+    	  //configure objectMapper for pretty input
+         objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+
+         //write customerObj object to customer2.json file
+         objectMapper.writeValue(new File("customer2.json"), s);
+    }
+
+	public void processBases(List<Base> bases, HttpSession session) {
+		int numSoldiers = 0;
+		int gals = 0;
+		int slaves = 0;
+		int loknars = 0;
+		for (Base base : bases) {
+			numSoldiers += base.getSoldiers().size();
+			for (Soldier soldier : base.getSoldiers()) {
+				if(girlsList.contains(soldier.getType()))
+					gals++;
+				else if(soldier.getType().equals(LOKNAR))
+					loknars++;
+				else if(soldier.getType().equals(SLAVE))
+					slaves++;
+			}
+		}
+		
+		System.out.println("number of soldiers: "+numSoldiers);
+		System.out.println("slaves: "+slaves);
+		System.out.println("loknars: "+ loknars);
+	}
 
 
 }

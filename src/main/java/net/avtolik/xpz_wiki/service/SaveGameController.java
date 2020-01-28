@@ -1,5 +1,7 @@
 package net.avtolik.xpz_wiki.service;
 
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import net.avtolik.xpz_wiki.model.Constants;
 import net.avtolik.xpz_wiki.model.StringResponse;
+import net.avtolik.xpz_wiki.model.saveFile.Base;
 import net.avtolik.xpz_wiki.model.saveFile.Discovered;
 import net.avtolik.xpz_wiki.model.saveFile.SaveGame;
 import net.avtolik.xpz_wiki.model.saveFile.SaveGameJson;
@@ -43,7 +46,7 @@ public class SaveGameController {
 		else {
 			model.addAttribute("saveGameLoaded", true);
 			model.addAttribute("saveGameResearch", saveGame.getCurrentResearch());
-			model.addAttribute("funds", saveGame.getFunds().get(saveGame.getFunds().size()-1));
+//			model.addAttribute("funds", saveGame.getFunds().get(saveGame.getFunds().size()-1));
 		}
 		
 		model.addAttribute("saveGameUpLoaded",  saveGameUpLoaded);
@@ -51,20 +54,20 @@ public class SaveGameController {
 	}
 	
 	
-	@PostMapping("/uploadSave")
-	public String uploadSaveGame(MultipartFile file, RedirectAttributes redirectAttributes, Model model, HttpSession session) {
-		
-		System.out.println("file is " + file.getOriginalFilename() + ", size: " + file.getSize());
-		
-		sgService.processSaveGame(file, session);
-		session.setAttribute("saveGameUpLoaded", true);
-		
-	    redirectAttributes.addFlashAttribute("message",
-	        "Your save game was successfully uploaded " + file.getOriginalFilename() + ". Now it's being processed. Please refresh after a minute.");
-	    redirectAttributes.addFlashAttribute("saveGameUpLoaded", true);
-//	    return new ModelAndView("redirect:/savegame", model);
-	    return "redirect:/savegame";
-	}
+//	@PostMapping("/uploadSave")
+//	public String uploadSaveGame(MultipartFile file, RedirectAttributes redirectAttributes, Model model, HttpSession session) {
+//		
+//		System.out.println("file is " + file.getOriginalFilename() + ", size: " + file.getSize());
+//		
+//		sgService.processSaveGame(file, session);
+//		session.setAttribute("saveGameUpLoaded", true);
+//		
+//	    redirectAttributes.addFlashAttribute("message",
+//	        "Your save game was successfully uploaded " + file.getOriginalFilename() + ". Now it's being processed. Please refresh after a minute.");
+//	    redirectAttributes.addFlashAttribute("saveGameUpLoaded", true);
+////	    return new ModelAndView("redirect:/savegame", model);
+//	    return "redirect:/savegame";
+//	}
 	
 	@PostMapping("/uploadParsed")
 	public String uploadParsedJson(RedirectAttributes redirectAttributes, SaveGameJson saveGameJson, Model model, HttpSession session) {
@@ -81,13 +84,16 @@ public class SaveGameController {
 	    return "redirect:/savegame";
 	}
 	
-	@PostMapping("/uploadDiscovered")
-	public void uploadDiscovered(Discovered discovered, Model model, HttpSession session) {
+
+	@RequestMapping(value = "/uploadBases",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE,method = RequestMethod.POST)
+	@ResponseBody
+	public StringResponse uploadBases(@RequestBody List<Base> bases, Model model, HttpSession session) {
 		
-		System.out.println("received is " + discovered);
+		System.out.println("received bases are " + bases.get(0).getName());
+		sgService.processBases(bases, session);
 		
-		session.setAttribute("discovered", discovered);	  
-//	    return "";
+		session.setAttribute("savegameB", bases);	  
+		return new StringResponse("OK");
 	}
 	
 	
@@ -96,7 +102,7 @@ public class SaveGameController {
 //	@ResponseStatus(value = HttpStatus.OK)
 	public StringResponse uploadUfopediaStatus(@RequestBody String payload, Model model, HttpSession session) {
 		
-		System.out.println(payload);
+		System.out.println("ufo status uploaded");
 		
 		
 		sgService.processUfopediaRuleStatus(payload, session);

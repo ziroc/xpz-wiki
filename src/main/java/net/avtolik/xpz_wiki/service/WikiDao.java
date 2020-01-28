@@ -27,7 +27,7 @@ import net.avtolik.xpz_wiki.model.Dictionary;
 import net.avtolik.xpz_wiki.model.Item;
 import net.avtolik.xpz_wiki.model.PiratezRules;
 import net.avtolik.xpz_wiki.model.Research;
-import net.avtolik.xpz_wiki.model.saveFile.Bases;
+import net.avtolik.xpz_wiki.model.saveFile.Base;
 import net.avtolik.xpz_wiki.model.saveFile.CurrentResearch;
 import net.avtolik.xpz_wiki.model.saveFile.SaveGame;
 import net.avtolik.xpz_wiki.model.saveFile.SaveGameMetaData;
@@ -99,8 +99,8 @@ public class WikiDao {
 		if(result == null)
 			return null;
 		
-		List<Bases> bases = result.getBases();
-		for (Bases base : bases) {
+		List<Base> bases = result.getBases();
+		for (Base base : bases) {
 			System.out.println("base: "+base.getName());
 			List<CurrentResearch> research = base.getResearch();
 			
