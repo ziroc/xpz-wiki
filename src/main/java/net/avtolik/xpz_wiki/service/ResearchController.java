@@ -31,13 +31,21 @@ public class ResearchController {
 		Research item = wd.getResearchItems().get(id);
 
 		if(item == null) {
-			model.addAttribute("error", "Item not found!");
-			return "item";
+			Article a = wd.getArticles().get(id);
+
+			if(a == null) {
+				model.addAttribute("error", "Research Item not found!");
+				return "research";
+			}
+			System.out.println("Research item not found, only article + " + item);		
+			item = new Research();
+			item.setName(id);
+			item.setRealName((String)wd.getDict().get(id));
 		}
-		
+
 		System.out.println("sess: "+ session.getAttribute("test1"));
 
-		System.out.println("Item found + "+item);
+		System.out.println("Research Item found + "+item);
 		String desc = getDescription(item);
 
 		desc = desc.replaceAll("\\{NEWLINE\\}", "\n");
@@ -68,7 +76,7 @@ public class ResearchController {
 				unlocks.add(i);
 			}
 		}
-		
+
 
 		List<Research> leadsToList = new ArrayList<>();
 		if (item.getLeadsTo() != null) {
@@ -80,6 +88,25 @@ public class ResearchController {
 			}
 		}
 
+		List<Research> freeList = new ArrayList<>();
+		if (item.getGetOneFree() != null) {
+			for (String free : item.getGetOneFree()) {
+				Research i = new Research();
+				i.setName(free);
+				System.out.println(free);
+				Research realResearch = wd.getResearchItems().get(free);
+				if (realResearch != null) {
+					i.setRealName(realResearch.getRealName());
+					freeList.add(i);
+				}
+				else {					
+					i.setRealName((String)wd.getDict().get(free));
+					freeList.add(i);
+				}
+			}
+		}
+
+
 		if (wd.getItems().containsKey(id))
 			model.addAttribute("showItemLink", true);
 
@@ -90,6 +117,7 @@ public class ResearchController {
 		model.addAttribute("unlocks", unlocks);
 		model.addAttribute("leadsToList", leadsToList);
 		model.addAttribute("newLineChar", '\n');
+		model.addAttribute("freeList", freeList);
 		return "research";
 	}
 
