@@ -49,6 +49,19 @@ public class ItemController {
 		desc = desc.replaceAll("\\{NEWLINE\\}", "\n");
 
 		item.setDescription(desc);
+		
+		System.out.println("flat: " +item.isFlatRate());
+		if(item.isFlatRate()) {
+			if (item.getCostSnap() != null) {
+				model.addAttribute("flatCost", item.getCostSnap());
+			}
+			else if(item.getCostAimed() != null) {
+				model.addAttribute("flatCost", item.getCostAimed());
+			}
+			else if(item.getCostMelee() != null) {
+				model.addAttribute("flatCost", item.getCostMelee());
+			}
+		}
 
 		model.addAttribute("item", item);
 		model.addAttribute("newLineChar", '\n');

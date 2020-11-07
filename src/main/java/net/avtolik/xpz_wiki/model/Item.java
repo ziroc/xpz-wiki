@@ -33,9 +33,14 @@ public class Item {
 	Integer snapRange;
 	Integer aimRange;
 	
+	boolean flatRate;
+	
 	DamageAlter damageAlter;
 	
 	String armorName;
+	Cost costSnap;
+	Cost costMelee;
+	Cost costAimed;
 	
 	Map <String, Object> damageBonus;
 	private List<String> compatibleAmmo;
@@ -172,6 +177,30 @@ public class Item {
 	}
 	public void setClipSize(Integer clipSize) {
 		this.clipSize = clipSize;
+	}
+	public boolean isFlatRate() {
+		return flatRate;
+	}
+	public void setFlatRate(boolean flatRate) {
+		this.flatRate = flatRate;
+	}
+	public Cost getCostSnap() {
+		return costSnap;
+	}
+	public void setCostSnap(Cost costSnap) {
+		this.costSnap = costSnap;
+	}
+	public Cost getCostAimed() {
+		return costAimed;
+	}
+	public void setCostAimed(Cost costAimed) {
+		this.costAimed = costAimed;
+	}
+	public Cost getCostMelee() {
+		return costMelee;
+	}
+	public void setCostMelee(Cost costMelee) {
+		this.costMelee = costMelee;
 	}
 	
 	

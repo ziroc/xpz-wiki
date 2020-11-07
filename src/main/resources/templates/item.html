@@ -30,6 +30,10 @@
 						<div th:if="${!isStoreItem}">
 							<p
 								th:utext=" ${#strings.replace(#strings.escapeXml(item.description),newLineChar,'&lt;br&gt;')} " />
+								
+							<p th:if="${item.flatRate}" >
+								<span th:text="'Flat TU cost: '+ ${flatCost.time} +', Energy: ' + ${flatCost.energy}">
+							</p>
 						</div>
 						
 						<div th:if="${isStoreItem}">
