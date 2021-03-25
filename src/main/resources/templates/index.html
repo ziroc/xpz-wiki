@@ -21,70 +21,12 @@
 		<h2 class="page-header">Welcome to a X-Piratez Wiki*!</h2>
 		<div class="jumbotron2">
 
-
-
-			<form action="/">
-				<div class="input-group">
-					<div class="input-group-prepend">
-						<span th:if="${researchResult == null && itemResult == null}" class="input-group-text">Search for a tech or item: </span> 
-						<span th:if="${result} != null" class="input-group-text">Search for something else: </span>
-					</div>
-					<input class="form-control" type="text" name="search">
-				</div>
-
-				<br>
-			</form>
-			<p>* Actually not a real wiki. This site is just gives you an opportunity to read up on the techs found in the game. 
-			One of the goals is to help you if you want to research something specific, to find its prerequisites.
-			 At a later time, it will also support the items and their stats and description.
+			<br />
+			<p>This was a temporary home of the development version of the wiki.<br /> Now it has moved here:
+			<a href="https://xpz-wiki.uk.to" >xpz-wiki.uk.to</a>
 			</p>
-			<p>New: <a href="savegame">analyze your save game<a/></p>
 			
-			<div th:if="${loaded != null && !loaded} ">
-				<p> The site is not yet loaded. Please reload after 20 seconds.out
-				</p>
-			</div>
 			
-			<div th:if="${saveGameResearch != null && itemResult == null && !saveGameResearch.isEmpty()} ">
-				<p>What are you currently researching: (<a href="/?reload=true" >reload</a>)</p>
-
-				<div th:each="item: ${saveGameResearch}">
-					<a th:href="@{/research(id=${item.name})}" th:text="${item.realName}"></a>
-				</div>
-				<br>
-			</div>
-
-			<div th:if="${researchResult == null && itemResult == null && items != null } ">
-				<p>Five random research articles:</p>
-
-				<div th:each="item: ${items}">
-					<a th:href="@{/research(id=${item.name})}" th:text="${item.realName}"></a>
-				</div>
-			</div>
-
-			<div th:if="${researchResult != null}">
-				<span th:text="'Found ' + ${researchResult.size()} + ' articles'"></span>
-				<div th:each="item: ${researchResult}">
-					<a th:href="@{/research(id=${item.name})}" th:text="${item.realName}"></a>
-				</div>
-				<br>
-			</div>
-
-			<div th:if="${itemResult != null}">
-				<span th:text="'Found ' + ${itemResult.size()} + ' items'"></span>
-				<div th:each="item: ${itemResult}">
-					<a th:href="@{/item(id=${item.name})}" th:text="${item.realName}"></a>
-				</div>
-				<br>
-			</div>
-			
-			<div th:if="${armorResult != null}">
-				<span th:text="'Found ' + ${armorResult.size()} + ' armors'"></span>
-				<div th:each="item: ${armorResult}">
-					<a th:href="@{/armor(id=${item.name})}" th:text="${item.realName}"></a>
-				</div>
-				<br>
-			</div>
 
 		</div>
 	</div>

@@ -57,25 +57,9 @@ public class WikiDao {
 
 	@EventListener(ApplicationReadyEvent.class)
 	public void loadData() {
-		System.out.println("Context loaded, trying to read items from file");
+		System.out.println("Context loaded");
 
-		System.out.println("Working Directory = " +
-				System.getProperty("user.dir"));
 
-		// loading order is important
-		loadResearchAndArticles();
-		loadDictionary();
-
-		researchNames = new HashMap<>(researchItems.size());
-		itemNames = new HashMap<>(items.size());
-		armorNames = new HashMap<>(armors.size());
-		saveGameResearchList = new ArrayList<Research>();
-
-		//process the data, so we can use it		
-
-		processResearchItems(researchItems);
-		processItems();
-		processArmors();
 
 		loaded = true;
 	}
