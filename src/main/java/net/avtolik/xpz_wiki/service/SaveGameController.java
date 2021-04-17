@@ -102,7 +102,7 @@ public class SaveGameController {
 //	@ResponseStatus(value = HttpStatus.OK)
 	public StringResponse uploadUfopediaStatus(@RequestBody String payload, Model model, HttpSession session) {
 		
-		System.out.println("ufo status uploaded");
+		System.out.println("UfoPedia status uploaded");
 		
 		
 		sgService.processUfopediaRuleStatus(payload, session);
