@@ -39,7 +39,7 @@
 		                      -->
         </form>
         <p>
-          <a href="armortable">Check out the armors you know about </a>
+          <a href="armortable">Check out the armors you know about.</a> (Not working for X Files)
         </p>
 		
         <div class="form-group ">
@@ -64,20 +64,29 @@
           </div>
         </div>
       </div>
+	  
       <!-- Side column -->
       <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-          <div>		
-            <h5>Funds:</h5> 
-            <span id="funds" class="currency" th:text="${ #numbers.formatInteger(funds ,0, 'WHITESPACE')}"></span>$
+          <div id="basicInfo" style="display:none">		
+            <h5>Info:</h5>			
+			<span id="date"></span>
+			</br>
+            Funds: $<span id="funds" class="currency" th:text="${ #numbers.formatInteger(funds ,0, 'WHITESPACE')}"></span>
+			</br>
+			<span id="score"></span>
           </div>
 		  </br>
-		  <div id="researchInfo" >		
-            <h5>Research Data:</h5>
+		  <div id="researchInfo" style="display:none">		
+            <h5>Research:</h5>
             <span id="res1"></span>
 			<br/>
 			<span id="res2"></span>
           </div>
-        </br>
+		 
+		  <div id="otherInfo" style="display:none" >		
+            <h5>Other:</h5>			
+          </div>
+        
         <span id="file-content"></span>
       </div>
     </div>
@@ -104,6 +113,8 @@
 	<script type="text/javascript" src="/js/renderjson.js"></script>
 
 	<script>
+	var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+	
 	function money (inp) {
 		return inp.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") ;
 	}
@@ -113,6 +124,7 @@
 	
 	function readSingleFile(e) {
 	  var saveGame;
+	  var gameDate ;
 	  var msg = document.getElementById('msg');
 	  msg.textContent="Analyzing the save game, please wait.";
 	  console.log("Analyzing the save game, please wait.");
@@ -129,10 +141,9 @@
 			var bases = JSON.stringify(result[1]['bases'], replacer)
 			var ufopediaRuleStatus = JSON.stringify(result[1]['ufopediaRuleStatus'], replacer)
 			var research = JSON.stringify(result[1]['discovered'], replacer)
-			localStorage.setItem('bases', bases );
 			//localStorage.setItem('discovered', research );
-			localStorage.setItem('ufopediaStatus', ufopediaRuleStatus );
-			console.log(result[1]);
+
+			gameDate = result[0]['time'];
 			saveGame = result[1];
 			
 			$.ajax({
@@ -142,8 +153,7 @@
 			  contentType: "application/json; charset=utf-8",
 			  dataType: "json",
 			  success: function(data){
-				 console.log("response for bases: "+data);
-				 document.getElementById("result").innerHTML = data ;
+				 console.log("response for bases: " + JSON.stringify(data));
 			  }
 			});
 			
@@ -154,70 +164,98 @@
 			  contentType: "application/json; charset=utf-8",
 			  dataType: "json",
 			  success: function(data){
-				 console.log("response for ufo status: "+data);
-				 document.getElementById("result").innerHTML = data ;
+				 console.log("response for ufo status: " + JSON.stringify(data));
 			  }
 			});
 
 		} catch (e) {
 			console.log(e);
 		}
-		console.log("done reading save file");
-		msg.textContent="Done. Reloading. Bases: ";		
-		displayContents(saveGame);
+		console.log("done reading save file");	
+		displayContents(saveGame, gameDate);
 	  }
 	  
 	  reader.readAsText(file);
 	}
 
-	function displayContents(saveGame) {
+	function displayContents(saveGame, gameDate) {
 	
 		//bases2 = JSON.parse(localStorage.getItem('bases')); 
-		
+		researchScores = saveGame['researchScores'];
+		regions = saveGame['regions'];
 		bases2 = saveGame['bases'];
 		console.log(bases2);
 		
 		//wikiStatus = JSON.parse(localStorage.getItem('ufopediaStatus'));
 		console.log('check if bases is null: ' + !bases2);
 		
-		if(!bases2 )
+	
+		// Bases and total reserach
+	    if(!bases2 )
 			return;
 		
 		var totalCost = 0;
 		var manpower = 0
 		var spent = 0;
 		
+		msg.textContent = bases2.length + " bases found: ";
 		bases2.forEach( function(item, index) {
 			msg.textContent += bases2[index]['name'];
-			if(index >0)
+			if(index != bases2.length -1)
 				msg.textContent += ", ";
 			
 			if(bases2[index]['research'] === undefined)
 				return;
 			bases2[index]['research'].forEach ( function(item, index) {
-				console.log("item: " + item.project);
 				totalCost = totalCost + item['cost'];
 				spent = spent + item['spent'];
 				manpower = manpower + item['assigned'];
 				
 			});
 		});
-		
-		
 
 		console.log("total cost is "+ totalCost);
 		console.log("total manpower is "+ manpower);
 		console.log("total spent is "+ spent);
 		
-		document.getElementById("res1").textContent = "Progress: " + spent + "/" + totalCost + " reseach days";
+		document.getElementById("res1").textContent = "Progress: " + spent + "/" + totalCost + " research days";
 		document.getElementById("res2").textContent = "Total researchers working: " + manpower;
+		document.getElementById("researchInfo").style.display = "block";
 		
-		const researchResult = document.getElementById("ResearchResult");
-		while (parent.firstChild) {
-			parent.firstChild.remove();
+		// Score
+		var currentResearchScore = researchScores[researchScores.length - 1];
+		console.log("currentResearchScore is "+ currentResearchScore);
+		
+		var totalAlien = 0
+		var totalXCOM = 0;
+		
+		regions.forEach( function(item, index) {
+			console.log( item);
+			totalAlien += item['activityAlien'][item['activityAlien'].length - 1];
+			totalXCOM += item['activityXcom'][item['activityXcom'].length - 1];
+		});
+		console.log("total alien is "+ totalAlien);
+		console.log("total xcom is "+ totalXCOM);
+		
+		document.getElementById("score").textContent = "This month's score estimate: " + (totalXCOM - totalAlien +currentResearchScore);
+		
+		document.getElementById("basicInfo").style.display = "block";
+		// END Score
+		
+		date = new Date(gameDate['year'], gameDate['month'], gameDate['day'], gameDate['hour'], gameDate['minute'], 0);
+		// document.getElementById("date").textContent = "Date: " + date.toUTCString();
+		document.getElementById("date").textContent = gameDate['day'] + " " + months[gameDate['month']] + " " + gameDate['year']
+		
+		const researchResultText = document.getElementById("ResearchResult");
+		
+		while (researchResultText.firstChild) {
+			researchResultText.firstChild.remove();
 		}
 		renderjson.set_show_to_level(3);
-		researchResult.appendChild(renderjson(bases2[0]['research']));	
+		researchResultText.textContent = "Current research: \n"
+		researchResultText.appendChild(document.createElement("br"));
+		researchResultText.appendChild(renderjson(bases2[0]['research']));	
+		
 		var funds = saveGame['funds'];
 		document.getElementById("funds").textContent = money2(funds[funds.length - 1]);
 	}
