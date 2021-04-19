@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -54,12 +56,13 @@ public class WikiDao {
 	@Autowired
 	private ApplicationArguments applicationArguments;
 
+	Logger logger = LoggerFactory.getLogger(WikiDao.class);
 
 	@EventListener(ApplicationReadyEvent.class)
 	public void loadData() {
-		System.out.println("Context loaded, trying to read items from file");
+		logger.info("Context loaded, trying to read items from file");
 
-		System.out.println("Working Directory = " +
+		logger.debug("Working Directory = " +
 				System.getProperty("user.dir"));
 
 		// loading order is important
@@ -127,7 +130,7 @@ public class WikiDao {
 				armorNames.put(realName.toString(), entry.getKey());
 			}
 			else 
-				System.out.println("real name not found for :" + armor.getName());
+				logger.debug("real name not found for :" + armor.getName());
 
 			if(armor.getStoreItem() != null) {
 				//				System.out.println("Armor " + armor.getName() +" has store name " +armor.getStoreItem());
@@ -138,13 +141,13 @@ public class WikiDao {
 					item.setArmorName(armor.getName());
 				}
 				else
-					System.out.println("item not found for this armor: "+armor.getName());
+					logger.debug("item not found for this armor: "+armor.getName());
 			}
 		}
 	}
 
 	private void processResearchItems(Map<String,Research> map) {
-		System.out.println("Entering processResearchItems, count how many times");
+		logger.debug("Entering processResearchItems, count how many times");
 
 		Map<String,Research> tempMap = new HashMap<>();
 
@@ -166,14 +169,14 @@ public class WikiDao {
 						tempMap.get(dep).getLeadsTo().add(thisName);
 					}
 					else if (articles.get(dep) != null) {
-						System.out.println("found dep for: " + thisName + " with no research item: " + dep);
+						logger.debug("found dep for: " + thisName + " with no research item: " + dep);
 						Research r = new Research();
 						r.setName(dep);
 						r.getLeadsTo().add(thisName);						
 						tempMap.put(dep, r);
 					} 
 					else {
-						System.out.println("research is missing: " + dep);
+						logger.debug("research is missing: " + dep);
 						continue;
 					}
 				}
@@ -188,17 +191,17 @@ public class WikiDao {
 		String fileName = null;
 		boolean customPath = false;
 
-		System.out.println("Loading SaveGame");
+		logger.debug("Loading SaveGame");
 		List<String> newSaveGamePath = applicationArguments.getOptionValues("savegame");
 
 		if (newSaveGamePath != null && newSaveGamePath.size() >0) {
 			fileName = newSaveGamePath.get(0);
-			System.out.println("using custom save game location: " + inputStream);
+			logger.debug("using custom save game location: " + inputStream);
 			customPath = true;
 		}
 
 		if (inputStream ==null && !customPath ) {
-			System.out.println("cannot load save game");
+			logger.debug("cannot load save game");
 			return null;
 		}
 		Constructor metaConstr = new Constructor(SaveGameMetaData.class);
@@ -232,7 +235,7 @@ public class WikiDao {
 
 			if(endFirstDoc) { 
 				metaData = yamlMeta.load  (sb.toString());
-				System.out.println("loading meta: "+metaData.getName());
+				logger.debug("loading meta: "+metaData.getName());
 				result = yamlSaveGame.load(br);
 			}
 
@@ -242,7 +245,7 @@ public class WikiDao {
 			ex.printStackTrace();
 			return null;
 		}
-		System.out.println("Save game name: " + metaData.getName());
+		logger.debug("Save game name: " + metaData.getName());
 		return result;
 
 	}
@@ -295,10 +298,10 @@ public class WikiDao {
 			filteredItems.stream().forEach(a -> items.put(a.getName(), a));
 			armorList.stream().forEach(a -> armors.put(a.getName(), a));
 
-			System.out.println("Reseach items and articles loaded");
+			logger.debug("Reseach items and articles loaded");
 
 		} catch (Exception e) {
-			System.out.println("Cannot load the items: "+e.getMessage());
+			logger.error("Cannot load the items: "+e.getMessage());
 			System.exit(-1);
 		}
 
@@ -328,10 +331,10 @@ public class WikiDao {
 
 			Dictionary d = yaml.load(inputStream);
 
-			System.out.println("Dic loaded: " + d.getEnUS().get("STR_TECHNOCRACY").equals("THE TECHNOCRACY"));
+			logger.debug("Dictionary loaded: " + d.getEnUS().get("STR_TECHNOCRACY").equals("THE TECHNOCRACY"));
 			dict = d.getEnUS();
 		} catch (Exception e) {
-			System.out.println("Cannot load the Dictionary: "+e.getMessage());
+			logger.error("Cannot load the Dictionary: "+e.getMessage());
 		}
 	}
 

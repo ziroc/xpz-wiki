@@ -6,6 +6,8 @@ import java.util.Map.Entry;
 
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +23,7 @@ public class ResearchController {
 	private static final String PREFIX1 = "_UFOPEDIA";
 	private static final String PREFIX2 = "_UC_UFOPEDIA";
 
+	Logger logger = LoggerFactory.getLogger(ResearchController.class);
 
 	@Autowired
 	WikiDao wd;
@@ -43,9 +46,9 @@ public class ResearchController {
 			item.setRealName((String)wd.getDict().get(id));
 		}
 
-		System.out.println("sess: "+ session.getAttribute("test1"));
+		logger.debug("sess: "+ session.getAttribute("test1"));
 
-		System.out.println("Research Item found + "+item);
+		logger.debug("Research Item found + "+item);
 		String desc = getDescription(item);
 
 		desc = desc.replaceAll("\\{NEWLINE\\}", "\n");
@@ -131,13 +134,13 @@ public class ResearchController {
 		if(desc == null && item.getLookup() != null) {
 			Research lookup = wd.getResearchItems().get(item.getLookup());
 			if(lookup != null) {
-				System.out.println("lookup found");
+				logger.debug("lookup found");
 				return getDescription(lookup);
 			}
 		}
 
 		if(desc == null && item.getCost() > 0) {
-			System.out.println("trying slow search - for required");
+			logger.debug("trying slow search - for required");
 
 			for (Entry<String, Article> entry : wd.getArticles().entrySet()) {
 				if(entry.getValue().getRequires() != null) {

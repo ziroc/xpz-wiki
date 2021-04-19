@@ -3,6 +3,8 @@ package net.avtolik.xpz_wiki.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,7 +18,7 @@ public class ItemController {
 	
 	private static final String PREFIX1 = "_UFOPEDIA";
 	private static final String PREFIX2 = "_UC_UFOPEDIA";
-
+	Logger logger = LoggerFactory.getLogger(ItemController.class);
 
 	@Autowired
 	WikiDao wd;
@@ -34,7 +36,7 @@ public class ItemController {
 			return "item";
 		}
 		model.addAttribute("notFound", false);
-		System.out.println("Item found + "+item.getRealName());
+		logger.debug("Item found + "+item.getRealName());
 		
 		List<Item> ammoList = new ArrayList<>();
 		if(item.getCompatibleAmmo() != null && !item.getCompatibleAmmo().isEmpty()) {
@@ -50,7 +52,7 @@ public class ItemController {
 
 		item.setDescription(desc);
 		
-		System.out.println("flat: " +item.isFlatRate());
+		logger.debug("flat: " +item.isFlatRate());
 		if(item.isFlatRate()) {
 			if (item.getCostSnap() != null) {
 				model.addAttribute("flatCost", item.getCostSnap());

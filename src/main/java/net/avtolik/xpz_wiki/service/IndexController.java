@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,11 +23,15 @@ public class IndexController {
 
 	@Autowired
 	WikiDao wd;
+	
+	Logger logger = LoggerFactory.getLogger(IndexController.class);
 
 
 	@GetMapping("/")
 	public String showIndex(@RequestParam(name="search", required=false) String search,
 			@RequestParam(name="reload", required=false) boolean reload, Model model, HttpSession session) {
+		
+		logger.debug("opening main page");
 		
 		if(wd == null || !wd.isLoaded()) {
 			model.addAttribute("loaded", false);
@@ -38,26 +44,26 @@ public class IndexController {
 //		}
 		
 		if(search!= null && !search.equals("")) {
-			System.out.println("searching for "+search);
+			logger.debug("searching for " + search);
 			
 			List<Research> researchResult = wd.getResearchNames().entrySet().stream().
 					filter(i -> i.getKey().toUpperCase().contains(search.toUpperCase()))
 					.map(i -> wd.getResearchItems().get(i.getValue())).collect(Collectors.toList());
-			System.out.println("found research: "+researchResult.size());
+			logger.debug("found research: "+researchResult.size());
 			if( !researchResult.isEmpty())
 				model.addAttribute("researchResult", researchResult);
 			
 			List<Item> itemResult = wd.getItemNames().entrySet().stream().
 					filter(i -> i.getKey().toUpperCase().contains(search.toUpperCase()))
 					.map(i -> wd.getItems().get(i.getValue())).collect(Collectors.toList());
-			System.out.println("found items: "+itemResult.size());
+			logger.debug("found items: "+itemResult.size());
 			if( !itemResult.isEmpty())
 				model.addAttribute("itemResult", itemResult);
 			
 			List<Armor> armorResult = wd.getArmorNames().entrySet().stream().
 					filter(i -> i.getKey().toUpperCase().contains(search.toUpperCase()))
 					.map(i -> wd.getArmors().get(i.getValue())).collect(Collectors.toList());
-			System.out.println("found items: "+armorResult.size());
+			logger.debug("found items: "+armorResult.size());
 			if( !itemResult.isEmpty())
 				model.addAttribute("armorResult", armorResult);
 			
