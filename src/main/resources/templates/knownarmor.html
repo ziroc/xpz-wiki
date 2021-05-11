@@ -43,30 +43,31 @@
 							<tr>
 								<th> Name</th>
 								<th> Front Side Back Under </th>
-								<th> CHARM </th>
-								<th> PIERCING </th>
-								<th> BURN </th>
-								<th> CONCUSSIVE </th>
-								<th> LASER </th>
-								<th> PLASMA </th>
-								<th> DAZE </th>
-								<th> CUTTING </th>
-								<th> CHEM </th>
-								<th> CHOCKING </th>
-								<th> ANTI-E511 </th>
-								<th> BIO </th>
-								<th> ELECTRIC </th>
-								<th> EMP </th>
-								<th> WARP </th>
-								<th> MIND </th>
-								<th> HEAT </th>
-								<th> COLD </th>								
+								<th class="rotate"><div><span> CHARM </span></div></th>
+								<th class="rotate"><div><span> PIERCING </span></div></th>
+								<th class="rotate"><div><span> BURN </span></div></th>
+								<th class="rotate"><div><span> CONCUSSIVE </span></div></th>
+								<th class="rotate"><div><span> LASER </span></div></th>
+								<th class="rotate"><div><span> PLASMA </span></div></th>
+								<th class="rotate"><div><span> DAZE </span></div></th>
+								<th class="rotate"><div><span> CUTTING </span></div></th>
+								<th class="rotate"><div><span> CHEM </span></div></th>
+								<th class="rotate"><div><span> CHOCKING </span></div></th>
+								<th class="rotate"><div><span> ANTI-E511 </span></div></th>
+								<th class="rotate"><div><span> BIO </span></div></th>
+								<th class="rotate"><div><span> ELECTRIC </span></div></th>
+								<th class="rotate"><div><span> EMP </span></div></th>
+								<th class="rotate"><div><span> WARP </span></div></th>
+								<th class="rotate"><div><span> MIND </span></div></th>
+								<th class="rotate"><div><span> HEAT </span></div></th>
+								<th class="rotate"><div><span> COLD </span></div></th>								
 							</tr>
 						</thead>
 						<tr th:each="armor, itemStat : ${armors}">
 
 							<td>
-								<span th:text="${armor.realName}" th:remove="tag"> </span>
+								
+								<a th:href="@{/armor(id=${armor.name})}" th:text="${armor.realName}">
 							</td>
 							<td>
 								<span th:text="${armor.frontArmor} + ' ' + ${armor.sideArmor} + ' ' +${armor.rearArmor} + ' ' +${armor.underArmor}" th:remove="tag"> </span>
@@ -94,9 +95,9 @@
 		 $.fn.dataTable.ext.search.push(
 			function (settings, searchData, index, rowData, counter) {
 			
-			if (searchData[0].startsWith('CAR*')) {
-				console.log(searchData[0])
-			}
+			//if (searchData[0].startsWith('CAR*')) {
+			//	console.log(searchData[0])
+			//}
 				
 			  var hideSea = $('input:checkbox[name="hideSea"]').is(':checked');
 			  var hidePea = $('input:checkbox[name="hidePea"]').is(':checked');
@@ -112,7 +113,7 @@
 			  }
 			  
 
-			  if (hideCars && searchData[0].startsWith('CAR*')) {
+			  if (hideCars && searchData[0].includes('CAR*')) {
 				return false;
 			  }  
 			  

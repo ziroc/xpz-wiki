@@ -40,7 +40,9 @@ public class SaveGameService {
 	
 	private static List<String> girlsList = Arrays.asList(girls);
 	private static final String LOKNAR = "STR_SOLDIER_LOKNAR";
-	private static final Object SLAVE = "STR_SOLDIER_SLAVE";
+	private static final String SLAVE = "STR_SOLDIER_SLAVE";
+	private static final String PEASANT = "STR_SOLDIER_PEASANT";
+	private static final String HERO = "STR_SOLDIER_HERO";
 
 	
 //	private final Path rootLocation = Paths.get("upload-dir");
@@ -92,7 +94,12 @@ public class SaveGameService {
 				//check if its a girl armor
 				Armor a = wd.getArmors().get(armor);
 				
-				if(a.getUnits()!=null) {
+				if(a.getUnits() != null) {
+					if(a.getUnits().contains(PEASANT) || a.getUnits().contains(LOKNAR)) {
+						result.add(a);
+						continue;
+					}
+						
 					for (String girl : girls) {
 						if(a.getUnits().contains(girl)) {
 							result.add(a);
@@ -144,12 +151,15 @@ public class SaveGameService {
     }
 
 	public void processBases(List<Base> bases, HttpSession session) {
-		int numSoldiers = 0;
 		int gals = 0;
 		int slaves = 0;
 		int loknars = 0;
+		int peasants = 0;
+		int heroes = 0;
+		int other = 0;
 		for (Base base : bases) {
-			numSoldiers += base.getSoldiers().size();
+			if(base.getSoldiers() == null)
+				continue;
 			for (Soldier soldier : base.getSoldiers()) {
 				if(girlsList.contains(soldier.getType()))
 					gals++;
@@ -157,12 +167,22 @@ public class SaveGameService {
 					loknars++;
 				else if(soldier.getType().equals(SLAVE))
 					slaves++;
+				else if(soldier.getType().equals(PEASANT))
+					peasants++;
+				else if(soldier.getType().equals(HERO))
+					heroes++;
+				else 
+					other++;
 			}
 		}
 		
-		System.out.println("number of soldiers: "+numSoldiers);
-		System.out.println("slaves: "+slaves);
-		System.out.println("loknars: "+ loknars);
+		System.out.println("total number of soldiers: " + gals + slaves + loknars + peasants + heroes + other);
+		System.out.println("gals: " + gals);
+		System.out.println("slaves: " +slaves);
+		System.out.println("loknars: " + loknars);
+		System.out.println("peasants: " + peasants);
+		System.out.println("heroes: " + heroes);
+		System.out.println("other: " + other);
 	}
 
 
