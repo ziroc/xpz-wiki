@@ -1,6 +1,7 @@
 package net.avtolik.xpz_wiki.service;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -18,22 +19,25 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Controller;
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.introspector.Property;
 import org.yaml.snakeyaml.introspector.PropertyUtils;
+import org.yaml.snakeyaml.representer.Representer;
 
 import net.avtolik.xpz_wiki.model.Armor;
 import net.avtolik.xpz_wiki.model.Article;
 import net.avtolik.xpz_wiki.model.Dictionary;
 import net.avtolik.xpz_wiki.model.Item;
+import net.avtolik.xpz_wiki.model.Manufacture;
 import net.avtolik.xpz_wiki.model.PiratezRules;
 import net.avtolik.xpz_wiki.model.Research;
 import net.avtolik.xpz_wiki.model.saveFile.Base;
 import net.avtolik.xpz_wiki.model.saveFile.CurrentResearch;
 import net.avtolik.xpz_wiki.model.saveFile.SaveGame;
 import net.avtolik.xpz_wiki.model.saveFile.SaveGameMetaData;
-
 
 @Controller
 public class WikiDao {
@@ -48,10 +52,10 @@ public class WikiDao {
 	private HashMap<String, Armor> armors;
 	private HashMap<String, String> armorNames;
 	private HashMap<String, Article> articles;
+	private HashMap<String, Manufacture> manifactureItems;
 
 	private SaveGameMetaData metaData = null;
 	private List<Research> saveGameResearchList;
-
 
 	@Autowired
 	private ApplicationArguments applicationArguments;
@@ -74,7 +78,7 @@ public class WikiDao {
 		armorNames = new HashMap<>(armors.size());
 		saveGameResearchList = new ArrayList<Research>();
 
-		//process the data, so we can use it		
+		// process the data, so we can use it
 
 		processResearchItems(researchItems);
 		processItems();
@@ -84,12 +88,12 @@ public class WikiDao {
 	}
 
 	private void processItems() {
-		// Load real names for  items
+		// Load real names for items
 		for (Map.Entry<String, Item> entry : items.entrySet()) {
 			String name = entry.getValue().getName();
-			Object realName = dict.get(name) ;
-			if(realName != null) {
-				entry.getValue().setRealName(realName.toString()); 
+			Object realName = dict.get(name);
+			if (realName != null) {
+				entry.getValue().setRealName(realName.toString());
 				itemNames.put(realName.toString(), entry.getKey());
 			}
 		}
@@ -99,20 +103,20 @@ public class WikiDao {
 		SaveGame result;
 		result = loadSave(inputStream);
 
-		if(result == null)
+		if (result == null)
 			return null;
 
 		List<Base> bases = result.getBases();
 		for (Base base : bases) {
-			System.out.println("base: "+base.getName());
+			System.out.println("base: " + base.getName());
 			List<CurrentResearch> research = base.getResearch();
 
-			if(research == null) // no research in this base
+			if (research == null) // no research in this base
 				continue;
 			for (CurrentResearch res : research) {
 				result.getCurrentResearch().add(researchItems.get(res.getProject()));
 				System.out.print("" + res.getProject());
-				System.out.println(" , realname: "+ dict.get(res.getProject()));
+				System.out.println(" , realname: " + dict.get(res.getProject()));
 			}
 		}
 
@@ -120,68 +124,65 @@ public class WikiDao {
 	}
 
 	private void processArmors() {
-		// Load real names for  armors
+		// Load real names for armors
 		for (Map.Entry<String, Armor> entry : armors.entrySet()) {
 			Armor armor = entry.getValue();
-			Object realName = dict.get(armor.getName()) ;
-			if(realName != null) {
-				//				System.out.println("real name  found for :" + armor.getName() + "  "+ realName);
-				entry.getValue().setRealName(realName.toString()); 
+			Object realName = dict.get(armor.getName());
+			if (realName != null) {
+				// System.out.println("real name found for :" + armor.getName() + " "+
+				// realName);
+				entry.getValue().setRealName(realName.toString());
 				armorNames.put(realName.toString(), entry.getKey());
-			}
-			else 
+			} else
 				logger.debug("real name not found for :" + armor.getName());
 
-			if(armor.getStoreItem() != null) {
-				//				System.out.println("Armor " + armor.getName() +" has store name " +armor.getStoreItem());
+			if (armor.getStoreItem() != null) {
+				// System.out.println("Armor " + armor.getName() +" has store name "
+				// +armor.getStoreItem());
 				Item item = items.get(armor.getStoreItem());
 
-				if(item != null) {
-					//					System.out.println("found item for it: " + item.getName());
+				if (item != null) {
+					// System.out.println("found item for it: " + item.getName());
 					item.setArmorName(armor.getName());
-				}
-				else
-					logger.debug("item not found for this armor: "+armor.getName());
+				} else
+					logger.debug("item not found for this armor: " + armor.getName());
 			}
 		}
 	}
 
-	private void processResearchItems(Map<String,Research> map) {
+	private void processResearchItems(Map<String, Research> map) {
 		logger.debug("Entering processResearchItems, count how many times");
 
-		Map<String,Research> tempMap = new HashMap<>();
+		Map<String, Research> tempMap = new HashMap<>();
 
 		// Load real names for research items,
 		for (Map.Entry<String, Research> entry : map.entrySet()) {
 			String thisName = entry.getValue().getName();
-			Object realName = dict.get(thisName) ;
-			if(realName != null) {
-				entry.getValue().setRealName(realName.toString()); 
+			Object realName = dict.get(thisName);
+			if (realName != null) {
+				entry.getValue().setRealName(realName.toString());
 				researchNames.put(realName.toString(), entry.getKey());
 			}
 			// add "Leads-To" items
-			if( entry.getValue().getDependencies() != null)
-				for (String dep: entry.getValue().getDependencies()) {
-					if(researchItems.get(dep ) != null) {
+			if (entry.getValue().getDependencies() != null)
+				for (String dep : entry.getValue().getDependencies()) {
+					if (researchItems.get(dep) != null) {
 						researchItems.get(dep).getLeadsTo().add(thisName);
-					}
-					else if (tempMap.get(dep) != null) {
+					} else if (tempMap.get(dep) != null) {
 						tempMap.get(dep).getLeadsTo().add(thisName);
-					}
-					else if (articles.get(dep) != null) {
+					} else if (articles.get(dep) != null) {
 						logger.debug("found dep for: " + thisName + " with no research item: " + dep);
 						Research r = new Research();
 						r.setName(dep);
-						r.getLeadsTo().add(thisName);						
+						r.getLeadsTo().add(thisName);
 						tempMap.put(dep, r);
-					} 
-					else {
+					} else {
 						logger.debug("research is missing: " + dep);
 						continue;
 					}
 				}
 		}
-		if(!tempMap.isEmpty())
+		if (!tempMap.isEmpty())
 			processResearchItems(tempMap);
 		map.putAll(tempMap);
 	}
@@ -194,13 +195,13 @@ public class WikiDao {
 		logger.debug("Loading SaveGame");
 		List<String> newSaveGamePath = applicationArguments.getOptionValues("savegame");
 
-		if (newSaveGamePath != null && newSaveGamePath.size() >0) {
+		if (newSaveGamePath != null && newSaveGamePath.size() > 0) {
 			fileName = newSaveGamePath.get(0);
 			logger.debug("using custom save game location: " + inputStream);
 			customPath = true;
 		}
 
-		if (inputStream ==null && !customPath ) {
+		if (inputStream == null && !customPath) {
 			logger.debug("cannot load save game");
 			return null;
 		}
@@ -216,30 +217,28 @@ public class WikiDao {
 
 		boolean endFirstDoc = false;
 
-		try { 
+		try {
 			if (customPath)
-				inputStream =  new FileInputStream(fileName);
+				inputStream = new FileInputStream(fileName);
 
 			MyBufferedReader br = new MyBufferedReader(new InputStreamReader(inputStream, "UTF-8"));
 
 			StringBuilder sb = new StringBuilder();
-			while(!endFirstDoc) {
+			while (!endFirstDoc) {
 				String line = br.readLine();
-				if(line.contains("---")) {
+				if (line.contains("---")) {
 					endFirstDoc = true;
 					break;
 				}
-				//		    	System.out.println(line);
-				sb.append(line+"\n");
+				// System.out.println(line);
+				sb.append(line + "\n");
 			}
 
-			if(endFirstDoc) { 
-				metaData = yamlMeta.load  (sb.toString());
-				logger.debug("loading meta: "+metaData.getName());
+			if (endFirstDoc) {
+				metaData = yamlMeta.load(sb.toString());
+				logger.debug("loading meta: " + metaData.getName());
 				result = yamlSaveGame.load(br);
 			}
-
-
 
 		} catch (IOException ex) {
 			ex.printStackTrace();
@@ -250,58 +249,76 @@ public class WikiDao {
 
 	}
 
-	List<String> toFixCase = Arrays.asList(new String[]{"ToArmorPre", "ArmorEffectiveness", "ToArmor", "ToMorale", "ToWound"});
+	List<String> toFixCase = Arrays
+			.asList(new String[] { "ToArmorPre", "ArmorEffectiveness", "ToArmor", "ToMorale", "ToWound" });
 
 	private void loadResearchAndArticles() {
-
 		InputStream inputStream;
+		LoaderOptions options = new LoaderOptions();
+		options.setMaxAliasesForCollections(3200);
+		options.setCodePointLimit(100 * 1024 * 1024);
+
+		Constructor c = new Constructor(PiratezRules.class);
+		c.setPropertyUtils(new PropertyUtils() {
+			@Override
+			public Property getProperty(Class<? extends Object> type, String name) {
+				if (name.equals("type"))
+					name = "name";
+				else if (toFixCase.contains(name))
+					name = name.substring(0, 1).toLowerCase() + name.substring(1);
+				return super.getProperty(type, name);
+			}
+		});
+		c.getPropertyUtils().setSkipMissingProperties(true);
+		Yaml yaml = new Yaml(c, new Representer(), new DumperOptions(), options);
+
 		try {
-			Constructor c = new Constructor(PiratezRules.class);
-			c.setPropertyUtils(new PropertyUtils() {
-				@Override
-				public Property getProperty(Class<? extends Object> type, String name)  {
-					if ( name.equals("type")) 
-						name = "name";
-					else if (toFixCase.contains(name)) 
-						name = name.substring(0, 1).toLowerCase() + name.substring(1);
-					return super.getProperty(type, name);
-				}
-			});
-			c.getPropertyUtils().setSkipMissingProperties(true);
-
-			Yaml yaml = new Yaml(c);
-
 			inputStream = this.getClass()
 					.getClassLoader()
 					.getResourceAsStream("Piratez.rul");
 
-			if(inputStream == null)
-				inputStream =  new FileInputStream("Piratez.rul");
+			try {
+				if (inputStream == null)
+					inputStream = new FileInputStream("Piratez.rul");
+			} catch (FileNotFoundException e) {
+				logger.error("file not found, trying upper dir");
+				inputStream = new FileInputStream("../Piratez.rul");
+			}
 
 			PiratezRules rules = yaml.load(inputStream);
 
-			List<Research> researchItemsTemp = rules.getResearch() ;
+			List<Research> researchItemsTemp = rules.getResearch();
 			List<Article> articleList = rules.getUfopaedia();
 			List<Item> itemList = rules.getItems();
 			List<Armor> armorList = rules.getArmors();
-			List<Research> filteredResearchItems = researchItemsTemp.stream().filter(i -> i.getDelete() == null).collect(Collectors.toList());
-			List<Article> filteredArticles = articleList.stream().filter(i -> i.getDelete() == null).collect(Collectors.toList());
-			List<Item> filteredItems = itemList.stream().filter(i -> i.getDelete() == null).collect(Collectors.toList());
+			List<Manufacture> manifactureList = rules.getManifacture();
+			List<Research> filteredResearchItems = researchItemsTemp.stream().filter(i -> i.getDelete() == null)
+					.collect(Collectors.toList());
+			List<Article> filteredArticles = articleList.stream().filter(i -> i.getDelete() == null)
+					.collect(Collectors.toList());
+			List<Item> filteredItems = itemList.stream().filter(i -> i.getDelete() == null)
+					.collect(Collectors.toList());
+			List<Manufacture> filteredManifacture = manifactureList.stream().filter(i -> i.getDelete() == null)
+					.collect(Collectors.toList());
 
 			researchItems = new HashMap<>();
 			articles = new HashMap<>();
 			items = new HashMap<>();
 			armors = new HashMap<>();
+			manifactureItems = new HashMap<>();
 
 			filteredResearchItems.stream().forEach(i -> researchItems.put(i.getName(), i));
 			filteredArticles.stream().forEach(a -> articles.put(a.getId(), a));
 			filteredItems.stream().forEach(a -> items.put(a.getName(), a));
+			filteredManifacture.stream().forEach(a -> manifactureItems.put(a.getName(), a));
 			armorList.stream().forEach(a -> armors.put(a.getName(), a));
 
+			logger.debug(manifactureItems.get("STR_LEATHER_ARMOR").toString());
 			logger.debug("Reseach items and articles loaded");
 
 		} catch (Exception e) {
-			logger.error("Cannot load the items: "+e.getMessage());
+			e.printStackTrace();
+			logger.error("Cannot load the items: " + e.getMessage());
 			System.exit(-1);
 		}
 
@@ -309,32 +326,36 @@ public class WikiDao {
 
 	private void loadDictionary() {
 		InputStream inputStream;
-		try {
-			Constructor c = new Constructor(Dictionary.class);
-			c.setPropertyUtils(new PropertyUtils() {
-				@Override
-				public Property getProperty(Class<? extends Object> type, String name)  {
-					if ( name.indexOf('-') > -1 ) {
-						name = name.replace("-", "");
-					}
-					return super.getProperty(type, name);
+		Constructor c = new Constructor(Dictionary.class);
+		c.setPropertyUtils(new PropertyUtils() {
+			@Override
+			public Property getProperty(Class<? extends Object> type, String name) {
+				if (name.indexOf('-') > -1) {
+					name = name.replace("-", "");
 				}
-			});
-			Yaml yaml = new Yaml(c);
+				return super.getProperty(type, name);
+			}
+		});
+		Yaml yaml = new Yaml(c);
 
+		try {
 			inputStream = this.getClass()
 					.getClassLoader()
 					.getResourceAsStream("en-US.yml");
-
-			if(inputStream == null)
-				inputStream =  new FileInputStream("en-US.yml");
+			try {
+				if (inputStream == null)
+					inputStream = new FileInputStream("en-US.yml");
+			} catch (FileNotFoundException e) {
+				logger.error("file not found, trying upper dir");
+				inputStream = new FileInputStream("../en-US.yml");
+			}
 
 			Dictionary d = yaml.load(inputStream);
 
 			logger.debug("Dictionary loaded: " + d.getEnUS().get("STR_TECHNOCRACY").equals("THE TECHNOCRACY"));
 			dict = d.getEnUS();
 		} catch (Exception e) {
-			logger.error("Cannot load the Dictionary: "+e.getMessage());
+			logger.error("Cannot load the Dictionary: " + e.getMessage());
 		}
 	}
 
@@ -404,5 +425,13 @@ public class WikiDao {
 
 	public List<Research> getSaveGameResearchList() {
 		return saveGameResearchList;
+	}
+
+	public HashMap<String, Manufacture> getManifactureItems() {
+		return manifactureItems;
+	}
+
+	public void setManifactureItems(HashMap<String, Manufacture> manifactureItems) {
+		this.manifactureItems = manifactureItems;
 	}
 }

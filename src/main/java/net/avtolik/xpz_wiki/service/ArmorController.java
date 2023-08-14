@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import net.avtolik.xpz_wiki.model.Armor;
 import net.avtolik.xpz_wiki.model.Constants;
+import net.avtolik.xpz_wiki.model.Manufacture;
 
 @Controller
 public class ArmorController {
@@ -22,24 +23,34 @@ public class ArmorController {
 	@GetMapping("/armor")
 	public String getItem(@RequestParam(name="id", required=false, defaultValue="World") String id, Model model) {
 
-		Armor item = wd.getArmors().get(id);
+		Armor armor = wd.getArmors().get(id);
 
-		if(item == null) {
+		if(armor == null) {
 			model.addAttribute("error", "Item not found!");
 			return "item";
 		}
-		
 
-
-		System.out.println("Armor found + "+item);
-		String desc = getDescription(item);
+		System.out.println("Armor found + "+armor);
+		String desc = getDescription(armor);
 
 		desc = desc.replaceAll("\\{NEWLINE\\}", "\n");
+		armor.setDescription(desc);
 
-		item.setDescription(desc);
+		Manufacture manItem = wd.getManifactureItems().get(armor.getStoreItem());
+		StringBuilder sb = new StringBuilder();
+		if(manItem != null) {
+			System.out.println("man item found + " + manItem);
+			sb.append("Required items: ");
+			manItem.getRequiredItems().forEach((reqId, numOfItems) -> { 
+				sb.append(wd.getDict().get(reqId) + " : "); 
+				sb.append(numOfItems + ", ");
+			});
+			sb.delete(sb.length()-2, sb.length()-1);
+		}
 
 		model.addAttribute("armorModifiers", Constants.armorModifiers);
-		model.addAttribute("item", item);
+		model.addAttribute("item", armor);
+		model.addAttribute("requiredItems", sb.toString());
 		model.addAttribute("newLineChar", '\n');
 		return "armor";
 	}

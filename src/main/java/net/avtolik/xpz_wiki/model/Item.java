@@ -10,7 +10,7 @@ import java.util.Map;
 public class Item {
 
 	String delete;
-	String name;
+	String name; // id actually
 	String realName;
 	String description;
 

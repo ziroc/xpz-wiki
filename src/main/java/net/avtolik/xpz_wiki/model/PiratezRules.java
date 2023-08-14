@@ -7,6 +7,7 @@ public class PiratezRules {
 	List<Item> items;
 	List<Armor> armors;
 	List<Research> research;
+	List<Manufacture> manufacture;
 	List<Article> ufopaedia;
 	
 
@@ -41,6 +42,13 @@ public class PiratezRules {
 	public void setArmors(List<Armor> armors) {
 		this.armors = armors;
 	}
-
 	
+	public List<Manufacture> getManifacture() {
+		return manufacture;
+	}
+
+	public void setManufacture(List<Manufacture> manifacture) {
+		this.manufacture = manifacture;
+	}
+
 }
