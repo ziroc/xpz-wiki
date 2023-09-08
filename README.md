@@ -1,5 +1,5 @@
 # xpz-wiki
 Wiki type of front-end for the X-Piratez Bootypedia.
 
-During development, I'm going to use this URL to host the latest build:
-https://xpz-wiki.uk.to
+Here you can find the latest build usually:
+[https://xpz-wiki.avtolik.net](https://xpz-wiki.avtolik.net)
