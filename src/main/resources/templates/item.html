@@ -36,10 +36,15 @@
 							</p>
 						</div>
 						
-						<div th:if="${isStoreItem}">
+						<p th:if="${isStoreItem}">
 							This is a store item for this <a th:href="@{/armor(id=${item.armorName})}" th:text="'armor'">
 							</a>
-						</div>
+
+						</p>
+						<p>
+							used for manufacturing of: <br>
+							<span th:text="${usedFor}" >
+						</p>
 					</div>
 				</div>
 				<div th:if="${notFound}">

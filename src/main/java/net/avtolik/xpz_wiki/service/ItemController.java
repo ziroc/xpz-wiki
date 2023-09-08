@@ -1,6 +1,7 @@
 package net.avtolik.xpz_wiki.service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -64,7 +65,16 @@ public class ItemController {
 				model.addAttribute("flatCost", item.getCostMelee());
 			}
 		}
-
+		HashSet<String> usedFor = wd.getUsedForManifacture().get(item.getName());
+		if( usedFor != null && usedFor.size()>0) {
+			System.out.println(usedFor);
+			ArrayList<String> usedForList = new ArrayList<>(usedFor.size());
+			usedFor.forEach(foritem -> usedForList.add(wd.getDict().get(foritem).toString()));
+			System.out.println(usedForList);
+			model.addAttribute("usedFor", usedForList);
+		} else {
+			model.addAttribute("usedFor", "- nothing -");
+		}
 		model.addAttribute("item", item);
 		model.addAttribute("newLineChar", '\n');
 		return "item";

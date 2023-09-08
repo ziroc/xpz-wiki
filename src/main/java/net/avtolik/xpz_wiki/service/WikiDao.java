@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -52,6 +53,8 @@ public class WikiDao {
 	private HashMap<String, Armor> armors;
 	private HashMap<String, String> armorNames;
 	private HashMap<String, Article> articles;
+	private HashMap<String, HashSet<String>> usedForManifacture;
+
 	private HashMap<String, Manufacture> manifactureItems;
 
 	private SaveGameMetaData metaData = null;
@@ -82,9 +85,32 @@ public class WikiDao {
 
 		processResearchItems(researchItems);
 		processItems();
+		processManufacture();
 		processArmors();
 
 		loaded = true;
+	}
+
+	private void processManufacture() {
+		usedForManifacture = new HashMap<>();
+		for (Map.Entry<String, Manufacture> entry : manifactureItems.entrySet()) {
+			String name = entry.getValue().getName();
+			Map<String, Object> requiredItems = entry.getValue().getRequiredItems();
+			if (requiredItems == null) 
+				continue;
+			requiredItems.keySet().forEach( item -> {
+				System.out.println(item);
+				HashSet<String> set = usedForManifacture.get(item);
+				if(set == null) {
+					set = new HashSet<>();
+					set.add(name);
+					usedForManifacture.put(item, set);
+					return;
+				}
+				set.add(name);
+			});
+			
+		}
 	}
 
 	private void processItems() {
@@ -434,4 +460,8 @@ public class WikiDao {
 	public void setManifactureItems(HashMap<String, Manufacture> manifactureItems) {
 		this.manifactureItems = manifactureItems;
 	}
+	public HashMap<String, HashSet<String>> getUsedForManifacture() {
+		return usedForManifacture;
+	}
+
 }
