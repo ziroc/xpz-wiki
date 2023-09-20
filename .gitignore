@@ -8,5 +8,5 @@ bin/**
 *.sav
 *.yml
 /target/
-log.txt
+log**
 .vscode/**
