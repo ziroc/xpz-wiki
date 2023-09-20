@@ -42,8 +42,14 @@
 
 						</p>
 						<p>
-							used for manufacturing of: <br>
-							<span th:text="${usedFor}" >
+							Used for manufacturing of: <br>
+							<div th:if="${ usedFor.notEmpty}" >
+								<span th:each="item,iter : ${usedFor.idList}">
+								   <a th:href="@{/item(id=${item})}" th:text="${usedFor.nameList[iter.index]}"></a>
+								   <span th:text="${iter.last}? '' : ', '"></span>
+							    </span>
+							</div>
+							<span th:unless="${ usedFor.notEmpty}" > &nbsp; not used for anything</span>
 						</p>
 					</div>
 				</div>

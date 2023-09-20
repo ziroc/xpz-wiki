@@ -11,6 +11,7 @@ public class Armor {
 	Integer weight;
 	Integer personalLight;
 	Map <String, Integer> stats;
+	Integer visibilityAtDark;
 	Integer frontArmor;
 	Integer sideArmor;
 	Integer rearArmor;
@@ -106,6 +107,12 @@ public class Armor {
 	}
 	public void setUnits(List<String> units) {
 		this.units = units;
+	}
+	public Integer getVisibilityAtDark() {
+		return visibilityAtDark;
+	}
+	public void setVisibilityAtDark(Integer visibilityAtDark) {
+		this.visibilityAtDark = visibilityAtDark;
 	}
 	
 }

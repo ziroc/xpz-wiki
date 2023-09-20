@@ -24,21 +24,19 @@
 
 
 			<form action="/">
-				<div class="input-group">
-					<div class="input-group-prepend">
-						<span th:if="${researchResult == null && itemResult == null}" class="input-group-text">Search for a tech or item: </span> 
-						<span th:if="${result} != null" class="input-group-text">Search for something else: </span>
-					</div>
-					<input class="form-control" type="text" name="search">
+				<div class="form-row">
+					<!-- <div class="input-group-prepend col">
+						<label th:if="${result} != null" class="input-group-text">Search for something else: </label>
+					</div> -->
+					<div class="col"><input class="form-control" type="text" name="search" placeholder="Search for a tech or item"></div>
+					<div class="col-2"><button type="submit" class="btn btn-primary mb-2 ">Search</button></div>					
 				</div>
-
 				<br>
 			</form>
-			<p>* Actually not a real wiki. This site is just gives you an opportunity to read up on the techs found in the game. 
-			One of the goals is to help you if you want to research something specific, to find its prerequisites.
-			 At a later time, it will also support the items and their stats and description.
-			</p>
-			<p>New: <a href="savegame">analyze your save game<a/></p>
+			<p th:if="${researchResult == null && itemResult == null}">* Actually not a real wiki. This site just gives you an opportunity to read up on the techs, weapons, crafts, etc found in the game.
+				To help you find your way around the big tech tree. </p>
+				
+			<p>New: <a href="savegame">analyze your save game</a></p>
 			
 			<div th:if="${loaded != null && !loaded} ">
 				<p> The site is not yet loaded. Please reload after 20 seconds.out
@@ -86,6 +84,13 @@
 				<br>
 			</div>
 
+			<div th:if="${craftResult != null}">
+				<span th:text="'Found ' + ${craftResult.size()} + ' crafts'"></span>
+				<div th:each="craft: ${craftResult}">
+					<a th:href="@{/craft(id=${craft.name})}" th:text="${craft.realName}"></a>
+				</div>
+				<br>
+			</div>			
 		</div>
 	</div>
 

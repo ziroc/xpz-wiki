@@ -30,6 +30,7 @@ import org.yaml.snakeyaml.representer.Representer;
 
 import net.avtolik.xpz_wiki.model.Armor;
 import net.avtolik.xpz_wiki.model.Article;
+import net.avtolik.xpz_wiki.model.Craft;
 import net.avtolik.xpz_wiki.model.Dictionary;
 import net.avtolik.xpz_wiki.model.Item;
 import net.avtolik.xpz_wiki.model.Manufacture;
@@ -52,6 +53,8 @@ public class WikiDao {
 	private HashMap<String, String> itemNames;
 	private HashMap<String, Armor> armors;
 	private HashMap<String, String> armorNames;
+	private HashMap<String, String> craftNames;
+	private HashMap<String, Craft> crafts;
 	private HashMap<String, Article> articles;
 	private HashMap<String, HashSet<String>> usedForManifacture;
 
@@ -79,6 +82,7 @@ public class WikiDao {
 		researchNames = new HashMap<>(researchItems.size());
 		itemNames = new HashMap<>(items.size());
 		armorNames = new HashMap<>(armors.size());
+		craftNames = new HashMap<>(crafts.size());
 		saveGameResearchList = new ArrayList<Research>();
 
 		// process the data, so we can use it
@@ -87,6 +91,7 @@ public class WikiDao {
 		processItems();
 		processManufacture();
 		processArmors();
+		processCrafts();
 
 		loaded = true;
 	}
@@ -99,7 +104,6 @@ public class WikiDao {
 			if (requiredItems == null) 
 				continue;
 			requiredItems.keySet().forEach( item -> {
-				System.out.println(item);
 				HashSet<String> set = usedForManifacture.get(item);
 				if(set == null) {
 					set = new HashSet<>();
@@ -124,6 +128,19 @@ public class WikiDao {
 			}
 		}
 	}
+
+	private void processCrafts() {
+		// Load real names for items
+		for (Map.Entry<String, Craft> entry : crafts.entrySet()) {
+			String name = entry.getValue().getName();
+			Object realName = dict.get(name);
+			if (realName != null) {
+				entry.getValue().setRealName(realName.toString());
+				craftNames.put(realName.toString(), entry.getKey());
+			}
+		}
+	}
+
 
 	public SaveGame loadAndProcessSaveGames(InputStream inputStream) {
 		SaveGame result;
@@ -330,6 +347,7 @@ public class WikiDao {
 			researchItems = new HashMap<>();
 			articles = new HashMap<>();
 			items = new HashMap<>();
+			crafts = new HashMap<>();
 			armors = new HashMap<>();
 			manifactureItems = new HashMap<>();
 
@@ -338,6 +356,7 @@ public class WikiDao {
 			filteredItems.stream().forEach(a -> items.put(a.getName(), a));
 			filteredManifacture.stream().forEach(a -> manifactureItems.put(a.getName(), a));
 			armorList.stream().forEach(a -> armors.put(a.getName(), a));
+			rules.getCrafts().forEach(a -> crafts.put(a.getName(), a));
 
 			logger.debug(manifactureItems.get("STR_LEATHER_ARMOR").toString());
 			logger.debug("Reseach items and articles loaded");
@@ -462,6 +481,22 @@ public class WikiDao {
 	}
 	public HashMap<String, HashSet<String>> getUsedForManifacture() {
 		return usedForManifacture;
+	}
+
+	public HashMap<String, String> getCraftNames() {
+		return craftNames;
+	}
+
+	public void setCraftNames(HashMap<String, String> craftNames) {
+		this.craftNames = craftNames;
+	}
+
+	public HashMap<String, Craft> getCrafts() {
+		return crafts;
+	}
+
+	public void setCrafts(HashMap<String, Craft> crafts) {
+		this.crafts = crafts;
 	}
 
 }

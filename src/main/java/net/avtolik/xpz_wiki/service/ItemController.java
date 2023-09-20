@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import net.avtolik.xpz_wiki.model.Item;
+import net.avtolik.xpz_wiki.model.UsedForObject;
 
 @Controller
 public class ItemController {
@@ -66,14 +67,25 @@ public class ItemController {
 			}
 		}
 		HashSet<String> usedFor = wd.getUsedForManifacture().get(item.getName());
+		UsedForObject u = new UsedForObject();
 		if( usedFor != null && usedFor.size()>0) {
 			System.out.println(usedFor);
-			ArrayList<String> usedForList = new ArrayList<>(usedFor.size());
-			usedFor.forEach(foritem -> usedForList.add(wd.getDict().get(foritem).toString()));
-			System.out.println(usedForList);
-			model.addAttribute("usedFor", usedForList);
+			ArrayList<String> nameList = new ArrayList<>(usedFor.size());
+			usedFor.forEach(foritem -> {
+				Object i = wd.getDict().get(foritem);
+				if (i == null) 
+					nameList.add("unkown");
+				else
+					nameList.add(i.toString());
+				});
+			System.out.println(nameList);
+			
+			u.setNotEmpty(true);
+			u.setIdList(usedFor);
+			u.setNameList(nameList);
+			model.addAttribute("usedFor", u);
 		} else {
-			model.addAttribute("usedFor", "- nothing -");
+			model.addAttribute("usedFor", u);
 		}
 		model.addAttribute("item", item);
 		model.addAttribute("newLineChar", '\n');

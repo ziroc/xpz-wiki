@@ -5,6 +5,7 @@ import java.util.List;
 public class PiratezRules {
 
 	List<Item> items;
+	List<Craft> crafts;
 	List<Armor> armors;
 	List<Research> research;
 	List<Manufacture> manufacture;
@@ -49,6 +50,14 @@ public class PiratezRules {
 
 	public void setManufacture(List<Manufacture> manifacture) {
 		this.manufacture = manifacture;
+	}
+
+	public List<Craft> getCrafts() {
+		return crafts;
+	}
+
+	public void setCrafts(List<Craft> crafts) {
+		this.crafts = crafts;
 	}
 
 }
