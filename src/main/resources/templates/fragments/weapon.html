@@ -84,6 +84,10 @@
 			Clip size: <span th:text=" ${item.clipSize} "></span>
 		</div>
 		
+		<div th:if="${#lists.contains(item.getCategories(), 'STR_BAT_CAT_UNDERWATER') != null }">
+			Underwater: yes
+		</div>
+
 		<div th:if="${item.weight != null }">
 			Weight: <span th:text=" ${item.weight} "></span>
 		</div>

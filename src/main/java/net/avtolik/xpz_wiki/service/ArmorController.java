@@ -41,11 +41,16 @@ public class ArmorController {
 		if(manItem != null) {
 			System.out.println("man item found + " + manItem);
 			sb.append("Required items: ");
-			manItem.getRequiredItems().forEach((reqId, numOfItems) -> { 
-				sb.append(wd.getDict().get(reqId) + " : "); 
-				sb.append(numOfItems + ", ");
-			});
-			sb.delete(sb.length()-2, sb.length()-1);
+			if(manItem.getRequiredItems() != null && manItem.getRequiredItems().size() !=0){
+				manItem.getRequiredItems().forEach((reqId, numOfItems) -> { 
+					sb.append(wd.getDict().get(reqId) + " : "); 
+					sb.append(numOfItems + ", ");
+				});
+				sb.delete(sb.length()-2, sb.length()-1);
+			}
+			else {
+				sb.append("none");
+			}
 		}
 
 		model.addAttribute("armorModifiers", Constants.armorModifiers);

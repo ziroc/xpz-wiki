@@ -11,6 +11,7 @@ public class Item {
 
 	String delete;
 	String name; // id actually
+	List<String> categories;
 	String realName;
 	String description;
 
@@ -202,9 +203,12 @@ public class Item {
 	public void setCostMelee(Cost costMelee) {
 		this.costMelee = costMelee;
 	}
-	
-	
-	
+	public List<String> getCategories() {
+		return categories;
+	}
+	public void setCategories(List<String> categories) {
+		this.categories = categories;
+	}
 	
 
 }

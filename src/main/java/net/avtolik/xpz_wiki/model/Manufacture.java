@@ -1,5 +1,6 @@
 package net.avtolik.xpz_wiki.model;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +14,7 @@ public class Manufacture {
 	String name; // id actually
 	
 	private List<String> requires;     // research name
-	private Map<String, Object> requiredItems;
+	private Map<String, Object> requiredItems = new HashMap<>();
 	
 
 	@Override

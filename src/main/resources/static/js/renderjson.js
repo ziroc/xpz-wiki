@@ -85,6 +85,11 @@ var module;
                                                    a.href = '#';
                                                    a.onclick = function() { callback(); return false; };
                                                    return a; };
+  var aWiki = function Awiki(txt, classname, callback) { var a = document.createElement("a");
+                                                   if (classname) a.className = classname;
+                                                   a.href = 'research?id=' + txt;
+                                                   a.onclick = function() { callback(); return false; };
+                                                   return a; };                                                   
 
     function _renderjson(json, indent, dont_indent, show_level, max_string, sort_objects) {
         var my_indent = dont_indent ? "" : indent;
@@ -119,8 +124,13 @@ var module;
                 return append(span("string"), themetext(null, my_indent, "string", JSON.stringify(json)));
             });
 
-        if (typeof(json) != "object") // Strings, numbers and bools
+        if (typeof(json) != "object") { // Strings, numbers and bools 
+            if(typeof(json) == "string" && json.startsWith("^^")) {
+                json = json.substring(2)
+                return append(aWiki(json), themetext(null, my_indent, "string", JSON.stringify(json)));
+            }
             return themetext(null, my_indent, typeof(json), JSON.stringify(json));
+        }
 
         if (json.constructor == Array) {
             if (json.length == 0) return themetext(null, my_indent, "array syntax", "[]");
@@ -149,8 +159,11 @@ var module;
                 keys = keys.sort();
             for (var i in keys) {
                 var k = keys[i];
+                var val = json[k]
+                if(k === "project")
+                    val = "^^"+val
                 append(os, themetext(null, indent+"    ", "key", '"'+k+'"', "object syntax", ': '),
-                       _renderjson(json[k], indent+"    ", true, show_level-1, max_string, sort_objects),
+                       _renderjson(val, indent+"    ", true, show_level-1, max_string, sort_objects),
                        k != last ? themetext("syntax", ",") : [],
                        text("\n"));
             }
