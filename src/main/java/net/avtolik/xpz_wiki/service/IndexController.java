@@ -39,7 +39,6 @@ public class IndexController {
 		}
 
 		// if(reload) {
-		// System.out.println("reloading");
 		// wd.loadAndProcessSaveGames();
 		// }
 

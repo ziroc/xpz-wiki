@@ -1,5 +1,7 @@
 package net.avtolik.xpz_wiki.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,6 +17,8 @@ public class CraftController {
 	
 	private static final String PREFIX1 = "_UFOPEDIA";
 	private static final String PREFIX2 = "_UC_UFOPEDIA";
+
+	Logger logger = LoggerFactory.getLogger(CraftController.class);
 
 
 	@Autowired
@@ -33,7 +37,7 @@ public class CraftController {
 		Craft craft = new Craft();
 		BeanUtils.copyProperties(origCraft, craft);
 		
-		System.out.println("Craft found + "+craft);
+		logger.debug("Craft found + "+craft);
 		String desc = getDescription(craft);
 
 		desc = desc.replaceAll("\\{NEWLINE\\}", "\n");
@@ -59,7 +63,7 @@ public class CraftController {
 		StringBuilder sb = new StringBuilder();
 
 		if(manItem != null) {
-			System.out.println("man item found + " + manItem);
+			logger.debug("man item found + " + manItem);
 			sb.append("Required items: ");
 			if(manItem.getRequiredItems() != null && manItem.getRequiredItems().size() !=0){
 				manItem.getRequiredItems().forEach((reqId, numOfItems) -> { 

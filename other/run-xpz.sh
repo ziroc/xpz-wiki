@@ -1,0 +1,1 @@
+nohup java -jar xpz-wiki.jar >/dev/null 2>&1 &

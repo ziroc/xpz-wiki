@@ -1,5 +1,7 @@
 package net.avtolik.xpz_wiki.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +18,7 @@ public class ArmorController {
 	private static final String PREFIX1 = "_UFOPEDIA";
 	private static final String PREFIX2 = "_UC_UFOPEDIA";
 
+	Logger logger = LoggerFactory.getLogger(ArmorController.class);
 
 	@Autowired
 	WikiDao wd;
@@ -30,7 +33,7 @@ public class ArmorController {
 			return "item";
 		}
 
-		System.out.println("Armor found + "+armor);
+		logger.debug("Armor found + "+armor);
 		String desc = getDescription(armor);
 
 		desc = desc.replaceAll("\\{NEWLINE\\}", "\n");
@@ -39,7 +42,7 @@ public class ArmorController {
 		Manufacture manItem = wd.getManifactureItems().get(armor.getStoreItem());
 		StringBuilder sb = new StringBuilder();
 		if(manItem != null) {
-			System.out.println("man item found + " + manItem);
+			logger.debug("man item found + " + manItem);
 			sb.append("Required items: ");
 			if(manItem.getRequiredItems() != null && manItem.getRequiredItems().size() !=0){
 				manItem.getRequiredItems().forEach((reqId, numOfItems) -> { 

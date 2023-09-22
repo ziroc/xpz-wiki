@@ -151,15 +151,14 @@ public class WikiDao {
 
 		List<Base> bases = result.getBases();
 		for (Base base : bases) {
-			System.out.println("base: " + base.getName());
+			logger.debug("base: " + base.getName());
 			List<CurrentResearch> research = base.getResearch();
 
 			if (research == null) // no research in this base
 				continue;
 			for (CurrentResearch res : research) {
 				result.getCurrentResearch().add(researchItems.get(res.getProject()));
-				System.out.print("" + res.getProject());
-				System.out.println(" , realname: " + dict.get(res.getProject()));
+				logger.debug(" , realname: " + dict.get(res.getProject()));
 			}
 		}
 
@@ -172,7 +171,7 @@ public class WikiDao {
 			Armor armor = entry.getValue();
 			Object realName = dict.get(armor.getName());
 			if (realName != null) {
-				// System.out.println("real name found for :" + armor.getName() + " "+
+				// logger.debug("real name found for :" + armor.getName() + " "+
 				// realName);
 				entry.getValue().setRealName(realName.toString());
 				armorNames.put(realName.toString(), entry.getKey());
@@ -180,12 +179,12 @@ public class WikiDao {
 				logger.debug("real name not found for :" + armor.getName());
 
 			if (armor.getStoreItem() != null) {
-				// System.out.println("Armor " + armor.getName() +" has store name "
+				// logger.debug("Armor " + armor.getName() +" has store name "
 				// +armor.getStoreItem());
 				Item item = items.get(armor.getStoreItem());
 
 				if (item != null) {
-					// System.out.println("found item for it: " + item.getName());
+					// logger.debug("found item for it: " + item.getName());
 					item.setArmorName(armor.getName());
 				} else
 					logger.debug("item not found for this armor: " + armor.getName());
@@ -273,7 +272,6 @@ public class WikiDao {
 					endFirstDoc = true;
 					break;
 				}
-				// System.out.println(line);
 				sb.append(line + "\n");
 			}
 

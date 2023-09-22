@@ -14,7 +14,6 @@ public class MyBufferedReader extends BufferedReader {
 	@Override
 	public String readLine() throws IOException {
 		String line = super.readLine();
-		System.out.println("@"+line);
 		if(line.startsWith("battleGame")) {
 
 			return null;

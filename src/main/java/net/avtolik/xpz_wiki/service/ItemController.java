@@ -55,7 +55,6 @@ public class ItemController {
 
 		item.setDescription(desc);
 
-		logger.debug("flat: " + item.isFlatRate());
 		if (item.isFlatRate()) {
 			if (item.getCostSnap() != null) {
 				model.addAttribute("flatCost", item.getCostSnap());
@@ -68,7 +67,7 @@ public class ItemController {
 		HashSet<String> usedFor = wd.getUsedForManifacture().get(item.getName());
 		UsedForObject u = new UsedForObject();
 		if (usedFor != null && usedFor.size() > 0) {
-			System.out.println(usedFor);
+			logger.debug(usedFor.toString());
 			ArrayList<String> nameList = new ArrayList<>(usedFor.size());
 			usedFor.forEach(foritem -> {
 				Object i = wd.getDict().get(foritem);
@@ -77,7 +76,6 @@ public class ItemController {
 				else
 					nameList.add(i.toString());
 			});
-			System.out.println(nameList);
 
 			u.setNotEmpty(true);
 			u.setIdList(usedFor);
@@ -91,7 +89,7 @@ public class ItemController {
 		StringBuilder sb = new StringBuilder();
 
 		if (manItem != null) {
-			System.out.println("man item found + " + manItem);
+			logger.debug("man item found + " + manItem);
 			sb.append("Required items: ");
 			if (manItem.getRequiredItems() != null && manItem.getRequiredItems().size() != 0) {
 				manItem.getRequiredItems().forEach((reqId, numOfItems) -> {

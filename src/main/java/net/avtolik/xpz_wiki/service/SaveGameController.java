@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -14,13 +16,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import net.avtolik.xpz_wiki.model.Constants;
 import net.avtolik.xpz_wiki.model.StringResponse;
 import net.avtolik.xpz_wiki.model.saveFile.Base;
-import net.avtolik.xpz_wiki.model.saveFile.Discovered;
 import net.avtolik.xpz_wiki.model.saveFile.SaveGame;
 import net.avtolik.xpz_wiki.model.saveFile.SaveGameJson;
 import net.avtolik.xpz_wiki.model.saveFile.UfopediaStatus;
@@ -28,12 +28,13 @@ import net.avtolik.xpz_wiki.model.saveFile.UfopediaStatus;
 @Controller
 public class SaveGameController {
 
-
 	@Autowired
 	WikiDao wd;
 	
 	@Autowired
 	SaveGameService sgService;
+
+	Logger logger = LoggerFactory.getLogger(SaveGameController.class);
 	
 	@GetMapping("/savegame")
 	public String showSave(Model model, HttpSession session) {
@@ -57,7 +58,7 @@ public class SaveGameController {
 //	@PostMapping("/uploadSave")
 //	public String uploadSaveGame(MultipartFile file, RedirectAttributes redirectAttributes, Model model, HttpSession session) {
 //		
-//		System.out.println("file is " + file.getOriginalFilename() + ", size: " + file.getSize());
+//		logger.debug("file is " + file.getOriginalFilename() + ", size: " + file.getSize());
 //		
 //		sgService.processSaveGame(file, session);
 //		session.setAttribute("saveGameUpLoaded", true);
@@ -72,7 +73,7 @@ public class SaveGameController {
 	@PostMapping("/uploadParsed")
 	public String uploadParsedJson(RedirectAttributes redirectAttributes, SaveGameJson saveGameJson, Model model, HttpSession session) {
 		
-		System.out.println("received is " + saveGameJson);
+		logger.debug("received is " + saveGameJson);
 		
 		sgService.processParsedJson(saveGameJson, session);
 		session.setAttribute("saveGameUpLoaded", true);
@@ -89,7 +90,7 @@ public class SaveGameController {
 	@ResponseBody
 	public StringResponse uploadBases(@RequestBody List<Base> bases, Model model, HttpSession session) {
 		
-		System.out.println("received bases are " + bases.get(0).getName());
+		logger.debug("received bases are " + bases.get(0).getName());
 		sgService.processBases(bases, session);
 		
 		session.setAttribute("savegameB", bases);	  
@@ -102,7 +103,7 @@ public class SaveGameController {
 //	@ResponseStatus(value = HttpStatus.OK)
 	public StringResponse uploadUfopediaStatus(@RequestBody String payload, Model model, HttpSession session) {
 		
-		System.out.println("UfoPedia status uploaded");
+		logger.debug("UfoPedia status uploaded");
 		
 		
 		sgService.processUfopediaRuleStatus(payload, session);

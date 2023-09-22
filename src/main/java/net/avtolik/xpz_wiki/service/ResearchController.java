@@ -40,7 +40,7 @@ public class ResearchController {
 				model.addAttribute("error", "Research Item not found!");
 				return "research";
 			}
-			System.out.println("Research item not found, only article + " + item);		
+			logger.debug("Research item not found, only article + " + item);		
 			item = new Research();
 			item.setName(id);
 			item.setRealName((String)wd.getDict().get(id));
@@ -96,7 +96,6 @@ public class ResearchController {
 			for (String free : item.getGetOneFree()) {
 				Research i = new Research();
 				i.setName(free);
-				System.out.println(free);
 				Research realResearch = wd.getResearchItems().get(free);
 				if (realResearch != null) {
 					i.setRealName(realResearch.getRealName());
