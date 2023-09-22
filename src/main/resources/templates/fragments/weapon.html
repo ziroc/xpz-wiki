@@ -8,11 +8,13 @@
 		<div th:if="${item.power != null }">
 			Damage: <span th:text=" ${item.power} "></span>
 		</div>
+		<div th:if="${item.shotgunPellets != null }">
+			Number of pellets: <span th:text=" ${item.shotgunPellets}"></span>
+		</div>
 		<br />
 		<div th:if="${item.accuracyMelee != null }">
 			Melee Accuracy: <span th:text=" ${item.accuracyMelee} + '%'"></span>
 		</div>
-
 
 
 		<!--  Ranged -->
@@ -75,8 +77,8 @@
 			Compatible ammo (dmg):
 			<ul>
 				<li th:each="ammo: ${ammoList}"><a
-					th:href="@{/item(id=${ammo.name})}" th:text="${ammo.realName}"></a> <span
-					th:text="'('+ ${ammo?.power} +')' "></span></li>
+					th:href="@{/item(id=${ammo.name})}" th:text="${ammo.realName}"></a> 
+					<span th:text=" ${ammo.shotgunPellets != null} ? '('+${ammo.shotgunPellets} +'x'+${ammo.power} +')' :  '('+${ammo.power} +')' "></span></li>
 			</ul>
 		</div>
 		
@@ -84,7 +86,7 @@
 			Clip size: <span th:text=" ${item.clipSize} "></span>
 		</div>
 		
-		<div th:if="${#lists.contains(item.getCategories(), 'STR_BAT_CAT_UNDERWATER') != null }">
+		<div th:if="${#lists.contains(item.getCategories(), 'STR_BAT_CAT_UNDERWATER') }">
 			Underwater: yes
 		</div>
 

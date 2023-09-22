@@ -42,6 +42,8 @@ public class Item {
 	Cost costSnap;
 	Cost costMelee;
 	Cost costAimed;
+
+	Integer shotgunPellets;
 	
 	Map <String, Object> damageBonus;
 	private List<String> compatibleAmmo;
@@ -208,6 +210,12 @@ public class Item {
 	}
 	public void setCategories(List<String> categories) {
 		this.categories = categories;
+	}
+	public Integer getShotgunPellets() {
+		return shotgunPellets;
+	}
+	public void setShotgunPellets(Integer shotgunPellets) {
+		this.shotgunPellets = shotgunPellets;
 	}
 	
 

@@ -95,7 +95,7 @@ public class ItemController {
 			sb.append("Required items: ");
 			if (manItem.getRequiredItems() != null && manItem.getRequiredItems().size() != 0) {
 				manItem.getRequiredItems().forEach((reqId, numOfItems) -> {
-					sb.append(wd.getDict().get(reqId) + " : ");
+					sb.append(wd.getDict().get(reqId) + ": ");
 					sb.append(numOfItems + ", ");
 				});
 				sb.delete(sb.length() - 2, sb.length() - 1);
