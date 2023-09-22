@@ -12,6 +12,8 @@ public class Manufacture {
 
 	String delete;
 	String name; // id actually
+	Integer time;
+	Integer cost;
 	
 	private List<String> requires;     // research name
 	private Map<String, Object> requiredItems = new HashMap<>();
@@ -46,6 +48,18 @@ public class Manufacture {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public Integer getTime() {
+		return time;
+	}
+	public void setTime(Integer time) {
+		this.time = time;
+	}
+	public Integer getCost() {
+		return cost;
+	}
+	public void setCost(Integer cost) {
+		this.cost = cost;
 	}
 	
 }

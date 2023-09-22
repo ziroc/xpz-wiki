@@ -10,7 +10,7 @@
 <meta name="author" content="">
 <link rel="icon" href="../../favicon.ico" />
 
-<title th:text="'XPZ WIKI - ' + ${item.realName}"></title>
+<title th:text="'XPZ WIKI - ' + ${craft.realName}"></title>
 
 <!-- Bootstrap core CSS -->
 <link href="../static/css/bootstrap.css" rel="stylesheet"
@@ -18,12 +18,12 @@
 </head>
 <body>
 	<div class="container">
-		<h2 class="page-header" th:text=" ${item.realName} "></h2>
+		<h2 class="page-header" th:text=" ${craft.realName} "></h2>
 
 		<div class="row">
 			<div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
 				<p
-				th:utext=" ${#strings.replace(#strings.escapeXml(item.description),newLineChar,'&lt;br&gt;')} " />
+				th:utext=" ${#strings.replace(#strings.escapeXml(craft.description),newLineChar,'&lt;br&gt;')} " />
 				
 				<div th:if="${manItem != null}"> Manufacture:<br>
 					<div th:if="${manItem.Cost != null}"> Cost: <span th:text=" ${manItem.Cost}"></span>
@@ -34,36 +34,25 @@
 						<span th:text=" ${requiredItems}"></span>
 					</div>
 				</div>
+
 			</div>
 
 			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+				
+				Fuel:  <span th:text=" ${craft.fuelMax} "></span> <br>
+				Max speed: <span th:text=" ${craft.speedMax} "></span> <br>
+				Shields:  <span th:text=" ${craft.shieldCapacity} "></span> <br>
+				Weapons slots:  <span th:text=" ${craft.weapons} "></span> <br>
+				Damage:  <span th:text=" ${craft.damageMax} "></span> <br>
 
-				Front Armor: <span th:text=" ${item.frontArmor} "></span> <br>
-				Side Armor: <span th:text=" ${item.sideArmor} "></span> <br>
-				Rear Armor: <span th:text=" ${item.rearArmor} "></span> <br>
-				Under Armor: <span th:text=" ${item.underArmor} "></span> <br>
+				Soldiers:  <span th:text=" ${craft.soldiers} "></span> <br>
+				Pilots:  <span th:text=" ${craft.pilots} "></span> <br>
+				Vehicles:  <span th:text=" ${craft.vehicles} "></span> <br>
+				Max large units:  <span th:text=" ${craft.maxLargeUnits} "></span> <br>
+				Refuel Item:  <span th:text=" ${craft.refuelItem} "></span> <br>
+				<br>
+				Buy price:  <span th:text=" ${craft.costBuy} "></span> <br>
 
-				
-				
-				<br>Damage modifiers:  
-				<div th:each="modd,iter : ${armorModifiers}">
-					<div th:if="${item.damageModifier[iter.index] != 1 }">
-					    <span style="padding-left: 15px" th:text="${modd}">mod name</span>:
-					  	<span th:text="${#numbers.formatDecimal(item.damageModifier[iter.index]*100, 0, 0)}">modifier</span>%
-				  	</div>
-				</div>
-				
-				<br>Stats:
-				<div th:each="stat : ${item.stats}">				
-				    <span style="padding-left: 15px" th:text="${stat.key}">key</span>:
-				    <span th:if="${stat.value >= 0 }" th:text="'+' + ${stat.value}">value</span>
-				    <span th:if="${stat.value < 0 }" th:text=" ${stat.value}">value</span>
-				</div>
-				
-				<div th:if="${item.weight != null }">
-					<br>
-					Weight: <span th:text=" ${item.weight} "></span>
-				</div>
 			</div>
 
 		</div>

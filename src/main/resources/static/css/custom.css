@@ -10,7 +10,9 @@
 	white-space: nowrap;
 }
 
-
+section {
+  margin-bottom: 1rem;
+}
 
 th.rotate {
   /* Something you can count on */

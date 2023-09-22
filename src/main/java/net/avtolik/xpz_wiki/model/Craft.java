@@ -6,18 +6,20 @@ public class Craft {
     String description;
     Integer fuelMax;
     Integer damageMax;
+    String shieldCapacity;
     Integer speedMax;
     Integer accel;
     Integer weapons;
     Integer pilots;
     Integer soldiers;
-    Integer vehicles;
+    String vehicles;
     Integer maxLargeUnits;
     Integer refuelRate;
     Integer radarRange;
     Integer radarChance;
     Integer repairRate;
     String refuelItem;
+    String costBuy;
     
     public String getName() {
         return name;
@@ -79,10 +81,10 @@ public class Craft {
     public void setSoldiers(Integer soldiers) {
         this.soldiers = soldiers;
     }
-    public Integer getVehicles() {
+    public String getVehicles() {
         return vehicles;
     }
-    public void setVehicles(Integer vehicles) {
+    public void setVehicles(String vehicles) {
         this.vehicles = vehicles;
     }
     public Integer getMaxLargeUnits() {
@@ -120,6 +122,18 @@ public class Craft {
     }
     public void setRefuelItem(String refuelItem) {
         this.refuelItem = refuelItem;
+    }
+    public String getShieldCapacity() {
+        return shieldCapacity;
+    }
+    public void setShieldCapacity(String shieldCapacity) {
+        this.shieldCapacity = shieldCapacity;
+    }
+    public String getCostBuy() {
+        return costBuy;
+    }
+    public void setCostBuy(String costBuy) {
+        this.costBuy = costBuy;
     }
 
     

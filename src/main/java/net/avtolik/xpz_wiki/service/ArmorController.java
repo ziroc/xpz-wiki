@@ -51,11 +51,13 @@ public class ArmorController {
 			else {
 				sb.append("none");
 			}
+			
+			model.addAttribute("requiredItems", sb.toString());
+			model.addAttribute("manItem", manItem);
 		}
 
 		model.addAttribute("armorModifiers", Constants.armorModifiers);
 		model.addAttribute("item", armor);
-		model.addAttribute("requiredItems", sb.toString());
 		model.addAttribute("newLineChar", '\n');
 		return "armor";
 	}
