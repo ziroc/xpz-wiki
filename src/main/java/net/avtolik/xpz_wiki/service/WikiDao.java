@@ -78,6 +78,10 @@ public class WikiDao {
 		// loading order is important
 		loadResearchAndArticles();
 		loadDictionary();
+		loadDictionaryXCOM1();
+		// TODO : also load xcom1 dic
+		// TODO : also load Piratez_Factions.rul - > update requiresBuy of items
+
 
 		researchNames = new HashMap<>(researchItems.size());
 		itemNames = new HashMap<>(items.size());
@@ -88,12 +92,17 @@ public class WikiDao {
 		// process the data, so we can use it
 
 		processResearchItems(researchItems);
+		customResearchThings();
 		processItems();
 		processManufacture();
 		processArmors();
 		processCrafts();
 
 		loaded = true;
+	}
+
+	private void customResearchThings() {
+		// researchItems.get("STR_WORKSHOP").setRealName("Workshop");
 	}
 
 	private void processManufacture() {
@@ -205,10 +214,25 @@ public class WikiDao {
 				entry.getValue().setRealName(realName.toString());
 				researchNames.put(realName.toString(), entry.getKey());
 			}
+
+			if (entry.getValue().getUnlocks() != null)
+				for (String u : entry.getValue().getUnlocks()) {
+					Research uitem = researchItems.get(u);
+					if (uitem != null) {
+						if(uitem.getUnlockedBy() == null) 
+							uitem.setUnlockedBy( new ArrayList<String>());
+						uitem.getUnlockedBy().add(thisName);
+						uitem.getDependencies().remove(thisName);
+					}
+				}
+
 			// add "Leads-To" items
 			if (entry.getValue().getDependencies() != null)
 				for (String dep : entry.getValue().getDependencies()) {
-					if (researchItems.get(dep) != null) {
+					Research item = researchItems.get(dep);
+					if (item != null ) {
+						if(item.getUnlocks() != null && item.getUnlocks().contains(thisName) ) 
+							continue;
 						researchItems.get(dep).getLeadsTo().add(thisName);
 					} else if (tempMap.get(dep) != null) {
 						tempMap.get(dep).getLeadsTo().add(thisName);
@@ -397,6 +421,49 @@ public class WikiDao {
 
 			logger.debug("Dictionary loaded: " + d.getEnUS().get("STR_TECHNOCRACY").equals("THE TECHNOCRACY"));
 			dict = d.getEnUS();
+		} catch (Exception e) {
+			logger.error("Cannot load the Dictionary: " + e.getMessage());
+		}
+	}
+
+	private void loadDictionaryXCOM1() {
+		logger.debug("Loading XCOM1 Dictionary");
+		InputStream inputStream;
+		Constructor c = new Constructor(Dictionary.class);
+		c.setPropertyUtils(new PropertyUtils() {
+			@Override
+			public Property getProperty(Class<? extends Object> type, String name) {
+				if (name.indexOf('-') > -1) {
+					name = name.replace("-", "");
+				}
+				return super.getProperty(type, name);
+			}
+		});
+		Yaml yaml = new Yaml(c);
+
+		try {
+			inputStream = this.getClass()
+					.getClassLoader()
+					.getResourceAsStream("en-US-xcom1.yml");
+			try {
+				if (inputStream == null)
+					inputStream = new FileInputStream("en-US-xcom1.yml");
+			} catch (FileNotFoundException e) {
+				logger.error("file not found, trying upper dir");
+				inputStream = new FileInputStream("../en-US-xcom1.yml");
+			}
+
+			Dictionary d = yaml.load(inputStream);
+
+			logger.debug("Dictionary loaded: " + d.getEnUS().get("STR_WORKSHOP").equals("Workshop"));
+			
+
+			d.getEnUS().forEach( (k, v) -> {
+				if(!dict.containsKey(k)) {
+					System.out.println("missing: " + k);
+					dict.put(k, v);
+				}
+			});
 		} catch (Exception e) {
 			logger.error("Cannot load the Dictionary: " + e.getMessage());
 		}

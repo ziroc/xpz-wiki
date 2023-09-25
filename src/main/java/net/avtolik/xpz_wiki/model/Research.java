@@ -20,6 +20,7 @@ public class Research {
 	boolean needItem;
 	List<String> dependencies;
 	List<String> unlocks;
+	List<String> unlockedBy;
 	List<String> requiresBaseFunc;
 	List<String> getOneFree;
 	List<String> disables;
@@ -28,7 +29,11 @@ public class Research {
 	String spawnedItem;
 	Map<String,List<String>> getOneFreeProtected;
 	
-	
+	public Research() {
+	}
+	public Research(String id) {
+		this.name = id;
+	}
 	public String getDelete() {
 		return delete;
 	}
@@ -133,6 +138,13 @@ public class Research {
 	public void setLeadsTo(List<String> leadsTo) {
 		this.leadsTo = leadsTo;
 	}
+	public List<String> getUnlockedBy() {
+		return unlockedBy;
+	}
+	public void setUnlockedBy(List<String> unlockedBy) {
+		this.unlockedBy = unlockedBy;
+	}
+	
 	@Override
 	public String toString() {
 		return "Item [realName=" + realName 
@@ -141,6 +153,5 @@ public class Research {
 				+ ", disables=" + disables + ", lookup=" + lookup + ", spawnedItem=" + spawnedItem	 + "]";
 	}
 
-	
 	
 }

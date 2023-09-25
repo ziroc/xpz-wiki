@@ -39,6 +39,22 @@
 						</th>
 					</p>
 				</th>
+
+			
+				<th:block th:if="${protectedMap != null}">
+					<h4> Gives one protected for free: </h4>
+					<div>
+						<div th:each="entry : ${protectedMap}">
+							<a th:href="@{/research(id=${entry.key.name})}" th:text="${entry.key.realName}+':'"></a><br>
+
+							<th:block th:each="free, iterStat  : ${entry.value}">
+								&nbsp&nbsp&nbsp<a th:href="@{/research(id=${free.name})}" th:text="${free.realName}"></a><span th:text="!${iterStat.last} ? '' + ',': ${a}"></span>
+							</th:block>
+						</div>
+
+
+					</div>
+				</th>
 			</div>
 
 
@@ -49,6 +65,15 @@
 				Points: <span th:text="${item.points}">points</span>
 				<br>
 				<br>
+				<div th:if="${not #lists.isEmpty(unlockedBy)}">
+					<h5 >Unlocked by:</h5>
+					<ul>
+						<li th:each="dep : ${unlockedBy}"><a
+							th:href="@{/research(id=${dep.name})}" th:text="${dep.realName}"></a>
+						</li>
+					</ul>
+				</div>
+
 				
 				<div th:if="${not #lists.isEmpty(deps)}">
 					<h5 >Depends on:</h5>
@@ -64,6 +89,16 @@
 					<ul>
 						<li th:each="unlock : ${unlocks}"><a
 							th:href="@{/research(id=${unlock.name})}" th:text="${unlock.realName}"></a>
+						</li>
+					</ul>
+				</div>
+
+								
+				<div th:if="${not #lists.isEmpty(disables)}">
+					<h5>Disables:</h5>
+					<ul>
+						<li th:each="ds : ${disables}"><a
+							th:href="@{/research(id=${ds.name})}" th:text="${ds.realName}"></a>
 						</li>
 					</ul>
 				</div>
