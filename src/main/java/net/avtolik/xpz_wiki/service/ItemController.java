@@ -51,8 +51,11 @@ public class ItemController {
 
 		String desc = getDescription(item);
 
+		// remove the first two newlines, and the rest convert
+		if(desc.startsWith( "{NEWLINE}{NEWLINE}")) {
+			desc = desc.replaceFirst("\\{NEWLINE\\}\\{NEWLINE\\}", "");
+		}
 		desc = desc.replaceAll("\\{NEWLINE\\}", "\n");
-
 		item.setDescription(desc);
 
 		if (item.isFlatRate()) {
