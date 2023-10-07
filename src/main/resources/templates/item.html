@@ -75,6 +75,15 @@
 				<div th:if="${!notFound}"
 					th:insert="${ item != null && (item.power != null || ammoList != null) } ? ~{fragments/weapon :: weapon} : ~{}">...</div>
 
+					<section th:if="${item.costUse != null && !item.costUse.isEmpty}"> Use:<br>
+						<ul>
+						<li th:each="item : ${item.costUse}">
+							<span th:text="${item.key}">key</span>:
+							<span th:if="${item.value < 0}" th:text="'+' + ${-item.value}"> </span>
+							<span th:if="${item.value >= 0}"  th:text="${-item.value}">value</span>
+						</li>
+						</ul>
+					</section>	
 			</div>
 
 		</div>

@@ -87,7 +87,7 @@ public class ItemController {
 
 		Manufacture manItem = wd.getManifactureItems().get(item.getName());
 		StringBuilder sb = new StringBuilder();
-
+		
 		if (manItem != null) {
 			logger.debug("man item found + " + manItem);
 			sb.append("Required items: ");

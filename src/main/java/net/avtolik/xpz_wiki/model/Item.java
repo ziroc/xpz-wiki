@@ -1,5 +1,6 @@
 package net.avtolik.xpz_wiki.model;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,10 +39,15 @@ public class Item {
 	
 	DamageAlter damageAlter;
 	
+
 	String armorName;
 	Cost costSnap;
 	Cost costMelee;
 	Cost costAimed;
+	Cost costThrow;
+
+	Map<String, Integer> costUse = new HashMap<>();
+	
 
 	Integer shotgunPellets;
 	
@@ -216,6 +222,18 @@ public class Item {
 	}
 	public void setShotgunPellets(Integer shotgunPellets) {
 		this.shotgunPellets = shotgunPellets;
+	}
+	public Cost getCostThrow() {
+		return costThrow;
+	}
+	public void setCostThrow(Cost costThrow) {
+		this.costThrow = costThrow;
+	}
+	public Map<String, Integer> getCostUse() {
+		return costUse;
+	}
+	public void setCostUse(Map<String, Integer> costUse) {
+		this.costUse = costUse;
 	}
 	
 

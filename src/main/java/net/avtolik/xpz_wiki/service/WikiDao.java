@@ -26,6 +26,11 @@ import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.introspector.Property;
 import org.yaml.snakeyaml.introspector.PropertyUtils;
+import org.yaml.snakeyaml.nodes.MappingNode;
+import org.yaml.snakeyaml.nodes.Node;
+import org.yaml.snakeyaml.nodes.NodeTuple;
+import org.yaml.snakeyaml.nodes.ScalarNode;
+import org.yaml.snakeyaml.nodes.Tag;
 import org.yaml.snakeyaml.representer.Representer;
 
 import net.avtolik.xpz_wiki.model.Armor;
@@ -127,11 +132,16 @@ public class WikiDao {
 	}
 
 	private void processItems() {
+		logger.debug("\n------- Process items");
 		// Load real names for items
 		for (Map.Entry<String, Item> entry : items.entrySet()) {
 			String name = entry.getValue().getName();
 			Object realName = dict.get(name);
 			if (realName != null) {
+				if (name.equals("STR_APPLE")) {
+					System.out.println("-----------");
+					entry.getValue().getCostUse().forEach((k,v) -> System.out.println(k + " " + v));
+				}
 				entry.getValue().setRealName(realName.toString());
 				itemNames.put(realName.toString(), entry.getKey());
 			}
@@ -323,7 +333,33 @@ public class WikiDao {
 		options.setMaxAliasesForCollections(3200);
 		options.setCodePointLimit(100 * 1024 * 1024);
 
-		Constructor c = new Constructor(PiratezRules.class);
+		Constructor c = new Constructor(PiratezRules.class) {
+			@Override
+            protected Object constructObject(Node node) {
+                if (node instanceof MappingNode) {
+                    // Create a new MappingNode with renamed keys
+                    MappingNode mappingNode = (MappingNode) node;
+                    for (int i = 0; i < mappingNode.getValue().size(); i += 1) {
+                        NodeTuple nodeTuple = mappingNode.getValue().get(i);
+                        // NodeTuple valueNode = mappingNode.getValue().get(i + 1);
+                        if (nodeTuple.getKeyNode() instanceof ScalarNode) {
+							ScalarNode scalarKeyNode = (ScalarNode) nodeTuple.getKeyNode();
+                            if (scalarKeyNode.getTag().equals(Tag.STR)) {
+								// Rename the key during deserialization
+                                if (scalarKeyNode.getValue().equals("mana")) {
+									logger.debug("SHHHHHHHHHHHHHHHHHHHHHHHHH renaming for " + node.getAnchor());
+									ScalarNode newNode = new ScalarNode (scalarKeyNode.getTag(), "freshness", scalarKeyNode.getStartMark(), scalarKeyNode.getEndMark(), scalarKeyNode.getScalarStyle());
+									NodeTuple nn = new NodeTuple(newNode, nodeTuple.getValueNode());
+									mappingNode.getValue().set(i, nn);
+                                }
+                            }
+                        }
+                    }
+                }
+                return super.constructObject(node);
+            }
+		};
+		
 		c.setPropertyUtils(new PropertyUtils() {
 			@Override
 			public Property getProperty(Class<? extends Object> type, String name) {
