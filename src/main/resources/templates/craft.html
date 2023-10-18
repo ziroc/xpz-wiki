@@ -53,6 +53,7 @@
 				<br>
 				Buy price:  <span th:text=" ${craft.costBuy} "></span> <br>
 
+				Required tech: <a th:if="${reqTech != null}" th:href="@{/research(id=${reqTech.name})}" th:text=" ${reqTech.realName} "></span> <br>
 			</div>
 
 		</div>

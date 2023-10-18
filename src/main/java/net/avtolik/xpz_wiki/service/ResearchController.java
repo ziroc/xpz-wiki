@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import net.avtolik.xpz_wiki.model.Article;
+import net.avtolik.xpz_wiki.model.Craft;
 import net.avtolik.xpz_wiki.model.Research;
 
 @Controller
@@ -139,7 +140,6 @@ public class ResearchController {
 			}
 		}
 
-
 		if (item.getGetOneFreeProtected() != null && !item.getGetOneFreeProtected().isEmpty()) {
 			HashMap<Research, List<Research>> m = new HashMap<>();
 			item.getGetOneFreeProtected().forEach((k, v) -> {
@@ -157,6 +157,16 @@ public class ResearchController {
 			model.addAttribute("protectedMap", m);
 		}
 
+		if (item.getUnlocksCraftManifacture() != null && !item.getUnlocksCraftManifacture().isEmpty()) {
+			List<Craft> ll = new ArrayList<>();
+			item.getUnlocksCraftManifacture().forEach( craftName  -> {
+				Craft c = new Craft(craftName);
+				c.setRealName(wd.getDict().get(craftName).toString());
+				ll.add(c);
+			});
+			model.addAttribute("unlockedCraft", ll);
+		}
+
 
 		if (wd.getItems().containsKey(id))
 			model.addAttribute("showItemLink", true);
@@ -165,6 +175,7 @@ public class ResearchController {
 		model.addAttribute("item", item);
 		model.addAttribute("deps", deps);
 		model.addAttribute("unlocks", unlocks);
+
 		model.addAttribute("disables", disables);
 		model.addAttribute("unlockedBy", unlockedBy);
 		model.addAttribute("leadsToList", leadsToList);

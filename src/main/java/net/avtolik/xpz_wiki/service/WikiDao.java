@@ -152,6 +152,15 @@ public class WikiDao {
 		// Load real names for items
 		for (Map.Entry<String, Craft> entry : crafts.entrySet()) {
 			String name = entry.getValue().getName();
+			System.out.println(name);
+			List<String> reqList = entry.getValue().getRequires();
+			if(reqList != null && !reqList.isEmpty()) {
+				String req = reqList.get(0); // I think every craft has ONLY 1 tech dep 
+				Research research = researchItems.get(req);
+				if (research != null) {
+					research.getUnlocksCraftManifacture().add(name);
+				}
+			}
 			Object realName = dict.get(name);
 			if (realName != null) {
 				entry.getValue().setRealName(realName.toString());

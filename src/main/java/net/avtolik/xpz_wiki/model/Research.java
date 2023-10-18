@@ -28,8 +28,10 @@ public class Research {
 	String lookup;
 	String spawnedItem;
 	Map<String,List<String>> getOneFreeProtected;
+	List<String> unlocksCraftManifacture;
 	
 	public Research() {
+		unlocksCraftManifacture = new ArrayList<>();
 	}
 	public Research(String id) {
 		this.name = id;
@@ -151,6 +153,12 @@ public class Research {
 				+ ", destroyItem=" + destroyItem + ", needItem=" + needItem + ", dependencies=" + dependencies
 				+ ", unlocks=" + unlocks + ", requiresBaseFunc=" + requiresBaseFunc + ", getOneFree=" + getOneFree
 				+ ", disables=" + disables + ", lookup=" + lookup + ", spawnedItem=" + spawnedItem	 + "]";
+	}
+	public List<String> getUnlocksCraftManifacture() {
+		return unlocksCraftManifacture;
+	}
+	public void setUnlocksCraftManifacture(List<String> unlocksCraftManifacture) {
+		this.unlocksCraftManifacture = unlocksCraftManifacture;
 	}
 
 	

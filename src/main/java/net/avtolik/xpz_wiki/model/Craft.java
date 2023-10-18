@@ -1,8 +1,11 @@
 package net.avtolik.xpz_wiki.model;
 
+import java.util.List;
+
 public class Craft {
     String name; // id actually
     String realName;
+    List<String> requires;
     String description;
     Integer fuelMax;
     Integer damageMax;
@@ -21,6 +24,13 @@ public class Craft {
     String refuelItem;
     String costBuy;
     
+    public Craft () {
+
+    }
+    public Craft (String name) {
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }
@@ -134,6 +144,12 @@ public class Craft {
     }
     public void setCostBuy(String costBuy) {
         this.costBuy = costBuy;
+    }
+    public List<String> getRequires() {
+        return requires;
+    }
+    public void setRequires(List<String> requires) {
+        this.requires = requires;
     }
 
     

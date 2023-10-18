@@ -31,6 +31,14 @@
 					th:utext=" ${#strings.replace(#strings.escapeXml(item.description),newLineChar,'&lt;br&gt;')} " />
 				</br>
 				
+				<th:block th:if="${not #lists.isEmpty(unlockedCraft)}">
+					<h4> Can manufacture: </h4>
+						<th:block th:each="craft, iterStat  : ${unlockedCraft}">
+							<a th:href="@{/craft(id=${craft.name})}" th:text="${craft.realName}"></a><span th:text="!${iterStat.last} ? '' + ',': ${a}"></span>
+						</th>
+				</th>
+
+
 				<th:block th:if="${not #lists.isEmpty(freeList)}">
 					<h4> Gives one for free: </h4>
 					<p>

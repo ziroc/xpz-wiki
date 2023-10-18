@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import net.avtolik.xpz_wiki.model.Craft;
 import net.avtolik.xpz_wiki.model.Manufacture;
+import net.avtolik.xpz_wiki.model.Research;
 
 @Controller
 public class CraftController {
@@ -78,8 +79,14 @@ public class CraftController {
 			model.addAttribute("requiredItems", sb.toString());
 			model.addAttribute("manItem", manItem);
 		}
+		if (craft.getRequires() != null && !craft.getRequires().isEmpty()) {
+			Research r = new Research(craft.getRequires().get(0));
+			r.setRealName(wd.getDict().get(r.getName()).toString());
+			model.addAttribute("reqTech", r);
+		}
 
 		// model.addAttribute("craftModifiers", Constants.craftModifiers);
+		
 		model.addAttribute("craft", craft);
 		model.addAttribute("newLineChar", '\n');
 		return "craft";
