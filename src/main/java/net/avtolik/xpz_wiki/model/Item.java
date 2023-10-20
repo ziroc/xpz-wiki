@@ -30,6 +30,7 @@ public class Item {
 	Integer accuracyAuto;
 	Integer accuracySnap;
 	Integer accuracyAimed;
+	Map<String, MultipleString> accuracyMultiplier;
 	
 	Integer autoRange;
 	Integer snapRange;
@@ -234,6 +235,12 @@ public class Item {
 	}
 	public void setCostUse(Map<String, Integer> costUse) {
 		this.costUse = costUse;
+	}
+	public Map<String, MultipleString> getAccuracyMultiplier() {
+		return accuracyMultiplier;
+	}
+	public void setAccuracyMultiplier(Map<String, MultipleString> accuracyMultiplier) {
+		this.accuracyMultiplier = accuracyMultiplier;
 	}
 	
 

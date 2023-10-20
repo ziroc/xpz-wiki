@@ -255,7 +255,17 @@
 		renderjson.set_show_to_level(3);
 		researchResultText.textContent = "Current research: \n"
 		researchResultText.appendChild(document.createElement("br"));
-		researchResultText.appendChild(renderjson(bases2[0]['research']));	
+		researchResultText.appendChild(document.createElement("br"));
+
+		bases2.forEach( function(item, index) {
+			if (item['research']) {	
+				var el = document.createElement("span");
+				el.textContent = item['name'] + ":"
+				researchResultText.appendChild(el);
+				researchResultText.appendChild(document.createElement("br"));
+				researchResultText.appendChild(renderjson(item['research']));	
+			}
+		});
 		
 		var funds = saveGame['funds'];
 		document.getElementById("funds").textContent = money2(funds[funds.length - 1]);

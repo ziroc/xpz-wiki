@@ -34,6 +34,12 @@
 					th:text=" ${item.tuAimed} +'%TU, '+${item.accuracyAimed} + '% (' + ${item?.aimRange}+')'   "></span>
 				</li>
 			</ul>
+			<div th:if="${item.accuracyMultiplier != null && !item.accuracyMultiplier.isEmpty() }">
+				Skill: <span th:each="stat, iter: ${item.accuracyMultiplier}">
+					<span th:if="${stat.value.toString} != '1.0'" th:text="${stat.value  + '*'}"></span><span th:text="${stat.key}"></span> <span th:if="${!iter.last}">+</span>
+				</span>
+			</div>
+
 		</div>
 
 		<!-- Other -->
